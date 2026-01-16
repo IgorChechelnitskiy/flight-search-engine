@@ -1,0 +1,66 @@
+// ======================================================= COLORS
+$colorLight: #ffffff;
+$colorMuted: #f2f2f3;
+$colorMedium: #e4e4e7;
+$colorDark: #18181b;
+$colorRed: #db2626;
+$colorRose: #e11d48;
+$colorOrange: #ea580c;
+$colorGreen: #22c55e;
+$colorBlue: #3b82f6;
+$colorYellow: #facc15;
+$colorViolet: #6d28d9;
+
+$iconColor: #0f172a;
+$iconLightColor: #71717a;
+$iconPlaceholderColor: #64748b;
+
+// ======================================================= BG COLOR
+$primaryBg: #ffffff;
+$secondaryBg: #fbfbfb;
+
+// ======================================================= TEXT
+// ------------------------------------------------------- color
+$titleColor: #0f172a;
+$textColor: #0f172a;
+$subtextColor: #64748b;
+$placeholderColor: #8fa0bc;
+$textLightColor: #ffffff;
+$textLinkColor: #5e81f4;
+
+// ------------------------------------------------------- size
+$fontSizeTitle: 18px;
+$fontSizeText: 14px;
+$fontSizeSubtext: 12px;
+
+// ======================================================= BORDER
+// ------------------------------------------------------- color
+$brdColor: $colorMedium;
+
+// ------------------------------------------------------- type
+$brd: 1px solid $brdColor;
+$brdLight: 1px solid #f1f1f2;
+
+// ------------------------------------------------------- radius
+$brdR_03: 0.3rem;
+$brdR_05: 0.5rem;
+$brdR_075: 0.75rem;
+$brdR_1: 1rem;
+
+// ======================================================= BOX_SHADOW
+// ------------------------------------------------------- type
+$boxShadow: 0 2px 4px -2px $brdColor;
+
+// ======================================================= MARGIN / PADDING
+
+$paddingBig: 30px;
+$paddingStandard: 20px;
+$paddingSmall: 10px;
+$marginBig: 30px;
+$marginStandard: 20px;
+$marginSmall: 10px;
+
+// ======================================================= COMPONENTS CONST
+$maxWidth: 320;
+$minHeight: 42;
+$appHeaderHeight: 52px;

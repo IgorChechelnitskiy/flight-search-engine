@@ -1,0 +1,74 @@
+@use "@/styles/variables" as vars;
+
+#AppWrapper {
+  min-height: 100vh;
+
+  .applicationContentWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+/*// ========================================================================== CUSTOM*/
+
+body {
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  outline: none;
+  box-sizing: border-box;
+
+  * {
+    outline: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .focus\:ring-offset-2:focus {
+    --tw-ring-offset-width: 0;
+    --tw-ring-color: transparant;
+  }
+}
+
+/*// -------------------------------------------------------------------------- TEXT*/
+
+.text {
+  color: vars.$textColor;
+  line-height: normal;
+  font-size: vars.$fontSizeText;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+.placeholder {
+  @extend .text;
+  color: vars.$placeholderColor;
+}
+
+.title {
+  @extend .text;
+  color: vars.$titleColor;
+  font-size: vars.$fontSizeTitle;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.subtext {
+  @extend .text;
+  color: vars.$subtextColor;
+  font-size: vars.$fontSizeSubtext;
+}
+
+.text-link {
+  @extend .text;
+  font-size: vars.$fontSizeSubtext;
+  color: vars.$textLinkColor;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.text-error {
+  @extend .text;
+  color: vars.$colorRed;
+  font-size: vars.$fontSizeSubtext;
+}
