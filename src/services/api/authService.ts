@@ -16,8 +16,6 @@ export const authService = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
 
-      console.log('token', data);
-
       storageService.setLocalStorage('token', `Bearer ${data.access_token}`);
       return data.access_token;
     } catch (error) {

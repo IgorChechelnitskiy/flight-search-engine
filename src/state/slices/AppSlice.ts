@@ -6,41 +6,19 @@ import type { IAppSlice } from '@/const/store-slices/IAppSlice.ts';
 const initialState: IAppSlice = {
   loading: false,
   flights: [],
+  locations: [],
 };
 
 function setLoading(state: IAppSlice, action: PayloadAction<boolean>) {
   state.loading = action?.payload || state.loading;
 }
 
-// function setIsUserMenuLoading(
-//   state: IAppSlice,
-//   action: PayloadAction<boolean>
-// ) {
-//   state.isUserMenuLoading = action?.payload;
-// }
-//
-// function setIsUserOrganizationsLoading(
-//   state: IAppSlice,
-//   action: PayloadAction<boolean>
-// ) {
-//   state.isUserOrganizationsLoading = action?.payload;
-// }
-//
-// function refreshToken(state: IAppSlice, action: PayloadAction<any>) {
-//   const data = action?.payload || null;
-//   storageService.setLocalStorage(StorageKeyEnum.TOKEN, data);
-//   state.token = storageService.getLocalStorage(StorageKeyEnum.TOKEN);
-// }
-//
-// function refreshPreferences(
-//   state: IAppSlice,
-//   action: PayloadAction<PreferencesModel>
-// ) {
-//   state.preferences = action?.payload || null;
-// }
-//
 function refreshFlights(state: IAppSlice, action: PayloadAction<any[]>) {
   state.flights = action?.payload || state.flights;
+}
+
+function refreshLocations(state: IAppSlice, action: PayloadAction<any[]>) {
+  state.locations = action?.payload || state.locations;
 }
 
 const AppSlice = createSlice({
@@ -49,6 +27,7 @@ const AppSlice = createSlice({
   reducers: {
     setLoading,
     refreshFlights,
+    refreshLocations,
   },
 });
 

@@ -1,57 +1,53 @@
-// import { StoreSliceEnum } from '@/const/enums/StoreSliceEnum.ts';
-// import { IAppSlice } from '@/const/interfaces/store-slices/IAppSlice.ts';
-// import { AppSliceActions as action } from '@/state/slices/AppSlice.ts';
-// import { useAppDispatch, useAppSelector } from '@/utils/hooks/redux.ts';
 import { StoreSliceEnum } from '@/const/enums/StoreSliceEnum.ts';
 import type { IAppSlice } from '@/const/store-slices/IAppSlice.ts';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux.ts';
+import storageService from '@/services/StorageService.ts';
+import { authService } from '@/services/api/authService.ts';
+import { appApiService } from '@/services/api/AppApiService.ts';
+import { AppSliceActions as action } from '@/state/slices/AppSlice.ts';
 
 export default function useAppService() {
   const state = useAppSelector<IAppSlice>(StoreSliceEnum.APP);
   const dispatch = useAppDispatch();
 
-  // async function getToken() {
-  //   const authResponse = await axios.post(
-  //     'https://test.api.amadeus.com/v1/security/oauth2/token',
-  //     new URLSearchParams({
-  //       grant_type: 'client_credentials',
-  //       client_id: 'VhCUaluJGRDoC0z01YFdVefmeg3Ndnkc',
-  //       client_secret: 'C9zAE4dJZBIfiEvv',
-  //     }),
-  //     { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-  //   );
-  //
-  //   storageService.setLocalStorage(
-  //     'token',
-  //     `Bearer ${authResponse.data.access_token}`
-  //   );
-  // }
+  async function initAuth() {
+    const token = storageService.getLocalStorage('token');
+    if (!token) {
+      await authService.fetchAndStoreToken();
+    }
+  }
 
-  // function refreshToken(model: any) {
-  //   dispatch(action.refreshToken(model));
-  // }
-  //
-  // function refreshPreferences(model: any) {
-  //   dispatch(action.refreshPreferences(model));
-  //   return model;
-  // }
+  async function getLocations(keyword: string) {
+    if (!keyword) return;
 
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     try {
-  //       const data = await appApiService.get();
-  //       setCountries(data);
-  //     } catch (error) {
-  //       console.error('Failed to load countries', error);
-  //     }
-  //   };
-  //   loadData();
-  // }, []);
+    dispatch(action.setLoading(true));
+    try {
+      const locations = await appApiService.getLocations(keyword);
+      dispatch(action.refreshLocations(locations));
+    } catch (error) {
+      console.error('Search failed', error);
+    } finally {
+      dispatch(action.setLoading(false));
+    }
+  }
+
+  async function getFlights(params: any) {
+    if (!params) return;
+    dispatch(action.setLoading(true));
+    try {
+      const flights = await appApiService.getFlightOffers(params);
+      dispatch(action.refreshFlights(flights));
+    } catch (error) {
+      console.error('Search failed', error);
+    } finally {
+      dispatch(action.setLoading(false));
+    }
+  }
 
   return {
-    ...state,
-    getToken,
-    // refreshPreferences,
-    // refreshToken,
+    state,
+    initAuth,
+    getLocations,
+    getFlights,
   };
 }

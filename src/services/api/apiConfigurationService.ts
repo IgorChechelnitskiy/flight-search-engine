@@ -7,13 +7,28 @@ export const apiConfigurationService = axios.create({
   baseURL: ApiUrlEnum.BASE_URL,
 });
 
-apiConfigurationService.interceptors.request.use(async (config) => {
-  let token = storageService.getLocalStorage<string>('token');
+apiConfigurationService.interceptors.request.use(
+  async (config) => {
+    let token = storageService.getLocalStorage<string>('token');
 
-  if (!token) {
-    token = await authService.fetchAndStoreToken();
+    if (!token) {
+      try {
+        token = await authService.fetchAndStoreToken();
+      } catch (error) {
+        console.error(
+          'Authentication failed, could not attach Bearer token',
+          error
+        );
+      }
+    }
+
+    if (token) {
+      config.headers.Authorization = token;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-
-  config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
+);
