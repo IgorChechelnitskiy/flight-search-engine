@@ -2,17 +2,23 @@ import './App.scss';
 import { Outlet } from 'react-router-dom';
 import { Suspense, useEffect } from 'react';
 import Header from '@/components/complex/header/Header.tsx';
-import useAppService from '@/useAppService.ts';
 import axios from 'axios';
 import StorageService from '@/services/StorageService.ts';
+import { authService } from '@/services/api/authService.ts';
 
 function App() {
-  const service = useAppService();
+  // const service = useAppService();
   const storageService = StorageService;
 
   useEffect(() => {
-    service.getToken();
-  });
+    const initAuth = async () => {
+      const token = storageService.getLocalStorage('token');
+      if (!token) {
+        await authService.fetchAndStoreToken();
+      }
+    };
+    initAuth();
+  }, []);
 
   useEffect(() => {
     const fetchFlights = async () => {

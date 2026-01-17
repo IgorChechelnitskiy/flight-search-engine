@@ -5,6 +5,7 @@ import type { IAppSlice } from '@/const/store-slices/IAppSlice.ts';
 
 const initialState: IAppSlice = {
   loading: false,
+  flights: [],
 };
 
 function setLoading(state: IAppSlice, action: PayloadAction<boolean>) {
@@ -38,18 +39,16 @@ function setLoading(state: IAppSlice, action: PayloadAction<boolean>) {
 //   state.preferences = action?.payload || null;
 // }
 //
-// function refreshUserOrganizations(
-//   state: IAppSlice,
-//   action: PayloadAction<UserOrganizationModel[]>
-// ) {
-//   state.userOrganizations = action?.payload || state.userOrganizations;
-// }
+function refreshFlights(state: IAppSlice, action: PayloadAction<any[]>) {
+  state.flights = action?.payload || state.flights;
+}
 
 const AppSlice = createSlice({
   name: StoreSliceEnum.APP,
   initialState,
   reducers: {
     setLoading,
+    refreshFlights,
   },
 });
 
