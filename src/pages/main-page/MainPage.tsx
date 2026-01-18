@@ -1,10 +1,14 @@
 import cs from './MainPage.module.scss';
 import { FlightSearchProvider } from '@/state/context/FlightSearchContext';
-import {
-  FiltersGroup
-} from '@/components/complex/filters-group/FiltersGroup.tsx';
+import { FiltersGroup } from '@/components/complex/filters-group/FiltersGroup.tsx';
+import { FlightResults } from '@/components/complex/flight-results/FlightResults.tsx';
+import { useAppSelector } from '@/hooks/redux.ts';
+import type { IAppSlice } from '@/const/store-slices/IAppSlice.ts';
+import { StoreSliceEnum } from '@/const/enums/StoreSliceEnum.ts';
 
 export function MainPage() {
+  const state = useAppSelector<IAppSlice>(StoreSliceEnum.APP);
+
   return (
     <main className={cs.mainPage}>
       {/* Hero Section using <section> and h1 */}
@@ -38,7 +42,7 @@ export function MainPage() {
 
       {/* Future Content Placeholder */}
       <section className={cs.resultsSection}>
-        {/* Results will be rendered here */}
+        <FlightResults data={state?.flightResults} />
       </section>
     </main>
   );

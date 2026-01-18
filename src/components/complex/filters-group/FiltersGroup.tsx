@@ -16,9 +16,12 @@ import { ArrowLeftRight, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
 import { useFlightSearch } from '@/state/context/FlightSearchContext.tsx';
 import { appApiService } from '@/services/api/AppApiService.ts';
-import { format } from 'date-fns'; // Recommended for date formatting
+import { format } from 'date-fns';
+import { useDispatch } from 'react-redux';
+import { AppSliceActions } from '@/state/slices/AppSlice.ts'; // Recommended for date formatting
 
 export function FiltersGroup() {
+  const dispatch = useDispatch();
   const [dateFrom, setDateFrom] = useState<Date>();
   const [dateTo, setDateTo] = useState<Date>();
 
@@ -42,9 +45,11 @@ export function FiltersGroup() {
 
       console.log('Sending to API:', payload);
       const flightOffers = await appApiService.getFlightOffers(payload);
+      dispatch(AppSliceActions.refreshFlightResults(flightOffers || []));
       console.log('API Results:', flightOffers);
     } catch (error) {
       console.error('Search failed', error);
+      dispatch(AppSliceActions.refreshFlightResults([]));
     }
   };
 

@@ -7,8 +7,7 @@ const initialState: IAppSlice = {
   loading: false,
   flights: undefined,
   locations: undefined,
-  userLocation: undefined,
-  trendingFlights: undefined,
+  flightResults: undefined,
 };
 
 function setLoading(state: IAppSlice, action: PayloadAction<boolean>) {
@@ -23,15 +22,8 @@ function refreshLocations(state: IAppSlice, action: PayloadAction<any[]>) {
   state.locations = action?.payload || state.locations;
 }
 
-function refreshUserLocation(state: IAppSlice, action: PayloadAction<any>) {
-  state.userLocation = action?.payload || state.userLocation;
-}
-
-function refreshTrendingFlights(
-  state: IAppSlice,
-  action: PayloadAction<any[]>
-) {
-  state.trendingFlights = action?.payload || state.trendingFlights;
+function refreshFlightResults(state: IAppSlice, action: PayloadAction<any[]>) {
+  state.flightResults = action?.payload || state.flightResults;
 }
 
 const AppSlice = createSlice({
@@ -41,8 +33,7 @@ const AppSlice = createSlice({
     setLoading,
     refreshFlights,
     refreshLocations,
-    refreshUserLocation,
-    refreshTrendingFlights,
+    refreshFlightResults,
   },
 });
 

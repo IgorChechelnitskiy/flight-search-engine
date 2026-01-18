@@ -1,0 +1,200 @@
+.resultsWrapper {
+  margin-top: 2rem;
+  padding-bottom: 4rem;
+  animation: slideUp 0.4s ease-out;
+}
+
+.tableContainer {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2),
+  0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+
+  thead {
+    background: #f1f5f9; // slate-100
+
+    th {
+      padding: 1rem 1.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #475569; // slate-600
+      border-bottom: 2px solid #e2e8f0;
+    }
+  }
+
+  tbody {
+    tr {
+      transition: all 0.2s ease;
+      background: white;
+
+      &:hover {
+        background: #f8fafc; // slate-50
+        transform: scale(1.002);
+        box-shadow: inset 4px 0 0 #2563eb; // Blue accent on hover
+      }
+
+      td {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #1e293b; // slate-900
+        font-size: 0.9375rem;
+      }
+    }
+  }
+}
+
+.actionCell {
+  display: flex;
+  align-items: center;
+
+  .bookButton {
+    margin: 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+
+.airlineBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #eff6ff;
+  color: #2563eb;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.7rem;
+  border: 1px solid #dbeafe;
+}
+
+.priceText {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a; // Deep Navy
+  letter-spacing: -0.02em;
+}
+
+.bookButton {
+  background: #2563eb;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  border: 1px solid #1d4ed8;
+
+  &:hover {
+    background: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: #ffffff;
+  border-top: 1px solid #edf2f7;
+}
+
+.pageStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+
+  .statusLabel {
+    color: #64748b; // slate-500
+  }
+
+  .statusValue {
+    font-weight: 600;
+    color: #1e293b; // slate-900
+  }
+}
+
+.navButtonGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pageIndicator {
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+  min-width: 60px;
+  text-align: center;
+}
+
+.paginationBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #475569;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #2563eb;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+    background: #f1f5f9;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f8fafc;
+  }
+
+  svg {
+    // Making icons slightly more prominent
+    color: #94a3b8;
+  }
+
+  &:hover:not(:disabled) svg {
+    color: #2563eb;
+  }
+}
+
+// Keyframes for the entrance
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
