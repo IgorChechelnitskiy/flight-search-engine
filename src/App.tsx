@@ -9,7 +9,6 @@ function App() {
 
   useEffect(() => {
     service.initAuth();
-    service.getUserCountryByIP();
   }, []);
 
   return (

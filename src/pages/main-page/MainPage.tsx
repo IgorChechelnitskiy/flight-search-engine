@@ -1,52 +1,45 @@
 import cs from './MainPage.module.scss';
-import useAppService from '@/useAppService.ts';
-import { useEffect } from 'react';
-import { FiltersGroup } from '@/components/complex/filters-group/FiltersGroup.tsx';
-import { FlightSearchProvider } from '@/state/context/FlightSearchContext.tsx';
+import { FlightSearchProvider } from '@/state/context/FlightSearchContext';
+import {
+  FiltersGroup
+} from '@/components/complex/filters-group/FiltersGroup.tsx';
 
 export function MainPage() {
-  const { state, ...service } = useAppService();
-  const searchParams = {
-    originLocationCode: 'JFK',
-    destinationLocationCode: 'LON',
-    departureDate: '2026-05-15',
-    returnDate: '2026-05-25', // Optional: Remove for one-way
-    adults: 1,
-    travelClass: 'ECONOMY',
-    nonStop: true,
-    currencyCode: 'USD',
-    max: 10, // Only get the top 10 best deals
-  };
-
-  // Calling your service
-
-  useEffect(() => {
-    service.getLocations('buc');
-    service.getFlights(searchParams);
-  }, []);
-
-  console.log('trendingFlights', state.trendingFlights);
-
   return (
-    <div className={cs.mainPage}>
-      <div className={cs.heroSection}>
-        <div className="text-center space-y-2 py-8 px-12 rounded-2xl backdrop-blur-sm bg-black/10">
-          <h1 className="flex flex-col md:flex-row items-center justify-center gap-2">
-            <span className="text-6xl md:text-8xl font-extralight tracking-tight text-white uppercase">
-              Flights
-            </span>
-            <span className="text-6xl md:text-8xl font-black tracking-tighter text-blue-400 uppercase italic">
-              Booking
-            </span>
+    <main className={cs.mainPage}>
+      {/* Hero Section using <section> and h1 */}
+      <section className={cs.heroSection} aria-labelledby="hero-title">
+        <div className={cs.glowOrb} aria-hidden="true" />
+
+        <div className={cs.heroContent}>
+          <h1 id="hero-title" className={cs.heroTitle}>
+            <span className={cs.titleLight}>Flights</span>
+            <span className={cs.titleBold}>Booking</span>
           </h1>
-          <p className="text-white/80 text-lg md:text-xl font-medium tracking-wide">
-            Explore the world with ease
-          </p>
+
+          <div className={cs.heroSubtitle}>
+            <span className={cs.line} aria-hidden="true" />
+            <p>Explore the world with ease</p>
+            <span className={cs.line} aria-hidden="true" />
+          </div>
         </div>
-      </div>
-      <FlightSearchProvider>
-        <FiltersGroup />
-      </FlightSearchProvider>
-    </div>
+      </section>
+
+      {/* Search area wrapped in a section with a hidden heading for accessibility */}
+      <section
+        className={cs.searchContainer}
+        aria-label="Flight search filters"
+      >
+        <h2 className="sr-only">Search Filters</h2>
+        <FlightSearchProvider>
+          <FiltersGroup />
+        </FlightSearchProvider>
+      </section>
+
+      {/* Future Content Placeholder */}
+      <section className={cs.resultsSection}>
+        {/* Results will be rendered here */}
+      </section>
+    </main>
   );
 }
