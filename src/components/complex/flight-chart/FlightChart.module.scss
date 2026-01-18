@@ -1,0 +1,42 @@
+@use "@/styles/variables" as vars;
+
+.chartWrapper {
+  background: linear-gradient(
+                  135deg,
+                  rgba(255, 255, 255, 0.8) 0%,
+                  rgba(255, 255, 255, 0.4) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+  0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  .header {
+    margin-bottom: 1.5rem;
+
+    .title {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.025em;
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+  }
+
+  .chartContainer {
+    height: 300px;
+    width: 100%;
+
+    @media (max-width: 768px) {
+      height: 250px;
+    }
+  }
+}

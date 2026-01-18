@@ -34,18 +34,17 @@ export function FlightDatePicker({
 
   return (
     <Popover
-      open={disabled ? false : open} // Force close if disabled
-      onOpenChange={disabled ? undefined : setOpen} // Disable interaction if disabled
+      open={disabled ? false : open}
+      onOpenChange={disabled ? undefined : setOpen}
     >
       <PopoverTrigger asChild>
         <Button
-          disabled={disabled} // THIS IS THE KEY FIX
+          disabled={disabled}
           variant="outline"
           className={cn(
             'h-12 min-w-50 justify-start text-left font-normal px-3',
             'bg-white border-none shadow-sm hover:bg-slate-50',
             !date && 'text-slate-400',
-            // Visually dim the input when disabled
             disabled && 'opacity-40 cursor-not-allowed bg-slate-100'
           )}
         >
@@ -66,7 +65,6 @@ export function FlightDatePicker({
           selected={date}
           onSelect={handleSelect}
           initialFocus
-          // Prevent selecting dates in the past
           disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
         />
       </PopoverContent>
