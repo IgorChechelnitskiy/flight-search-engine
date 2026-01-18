@@ -1,0 +1,30 @@
+@use "@/styles/variables" as vars;
+
+.mainPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  .heroSection {
+    height: 400px;
+    background-image: url('@/assets/images/HeaderImage.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+
+    .mainPageTitle {
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+
+}

@@ -1,4 +1,5 @@
 import cs from './Header.module.scss';
+import React from 'react';
 
 export default function Header() {
   // const [_isMinimized, setIsMinimized] = useState<boolean>(null);
@@ -48,7 +49,14 @@ export default function Header() {
 
   return (
     <div className={cs.header}>
-      <div>Header</div>
+      <div className="flex items-center gap-1 group cursor-default">
+        <span className="text-2xl font-light tracking-tight text-slate-500 uppercase">
+          Flights
+        </span>
+        <span className="text-2xl font-black tracking-tighter text-blue-600 uppercase">
+          Booking
+        </span>
+      </div>
       {/*<UserMenu />*/}
     </div>
   );
