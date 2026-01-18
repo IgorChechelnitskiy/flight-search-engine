@@ -3,4 +3,5 @@ export interface IAppSlice {
   flights?: any[];
   locations?: any[];
   flightResults?: any[];
+  travelDestinations?: any[];
 }

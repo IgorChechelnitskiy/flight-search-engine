@@ -58,54 +58,58 @@ export function FiltersGroup() {
 
   return (
     <div className={cs.filtersGroup}>
+      {/* Top Row: Selectors */}
       <div className={cs.dropDownMenusBlock}>
         <UniversalSelector
           collection="flightType"
-          className={cs.universalSelector}
           onChange={(id) => setTripType(id as 'one-way' | 'round-trip')}
         />
         <PassengerSelector />
         <UniversalSelector
           collection="cabinClass"
-          className={cs.universalSelector}
           onChange={(id) => setCabinClass(id)}
         />
         <UniversalSelector
           collection="currency"
-          className={cs.universalSelector}
           onChange={(id) => setCurrency(id)}
         />
       </div>
 
+      {/* Main Row: Inputs */}
       <div className={cs.inputsBlock}>
         <FlightAutocomplete placeholder="From where?" type="from" />
 
-        <div className="absolute left-[35%] -translate-x-1/2 z-10">
+        <div className={cs.swapButtonWrapper}>
           <Button
             variant="outline"
             size="icon"
             type="button"
             onClick={swapLocations}
-            className="h-8 w-8 rounded-full bg-white border shadow-sm hover:bg-slate-50 transition-transform active:scale-90"
+            className="h-10 w-10 rounded-full bg-slate-900 border-white/20 shadow-xl hover:bg-slate-800 transition-all active:scale-90"
           >
-            <ArrowLeftRight className="h-4 w-4 text-blue-600" />
+            <ArrowLeftRight className="h-4 w-4 text-blue-400" />
           </Button>
         </div>
+
         <FlightAutocomplete placeholder="To where?" type="to" />
+
         <FlightDatePicker date={dateFrom} onChange={setDateFrom} />
+
         <FlightDatePicker
           date={dateTo}
           onChange={setDateTo}
           disabled={tripType === 'one-way'}
         />
       </div>
+
+      {/* Bottom Row: Action */}
       <Button
         onClick={handleSearch}
         disabled={!searchParams || !dateFrom}
-        className="w-full md:w-auto h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg flex items-center justify-center gap-2"
+        className={cs.searchBtn}
       >
-        <Search className="h-5 w-5" />
-        Search
+        <Search className="h-5 w-5 mr-2" />
+        Search Flights
       </Button>
     </div>
   );
@@ -113,22 +117,16 @@ export function FiltersGroup() {
 
 export function FiltersGroupSkeleton() {
   return (
-    <div className="p-6 bg-white rounded-xl border border-slate-200 shadow-md space-y-6">
-      <div className="flex flex-wrap gap-4">
-        <Skeleton className="h-10 w-[140px] rounded-md" />
-        <Skeleton className="h-10 w-[140px] rounded-md" />
-        <Skeleton className="h-10 w-[120px] rounded-md" />
+    <div className={cs.skeletonContainer}>
+      <div className="flex gap-4 mb-4">
+        <Skeleton className="h-10 w-32 bg-white/10" />
+        <Skeleton className="h-10 w-32 bg-white/10" />
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
-        <Skeleton className="h-12 w-full rounded-lg" />
-        <Skeleton className="h-12 w-full rounded-lg" />
-        <Skeleton className="h-12 w-full rounded-lg" />
-        <Skeleton className="h-12 w-full rounded-lg" />
-      </div>
-
-      <div className="flex justify-end">
-        <Skeleton className="h-12 w-full md:w-40 rounded-lg" />
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Skeleton className="h-14 w-full bg-white/10" />
+        <Skeleton className="h-14 w-full bg-white/10" />
+        <Skeleton className="h-14 w-full bg-white/10" />
+        <Skeleton className="h-14 w-full bg-white/10" />
       </div>
     </div>
   );

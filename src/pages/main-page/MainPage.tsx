@@ -5,16 +5,21 @@ import {
   FlightResults,
   FlightResultsSkeleton,
 } from '@/components/complex/flight-results/FlightResults.tsx';
-import { useAppSelector } from '@/hooks/redux.ts';
-import type { IAppSlice } from '@/const/store-slices/IAppSlice.ts';
-import { StoreSliceEnum } from '@/const/enums/StoreSliceEnum.ts';
+import { useEffect } from 'react';
+import useAppService from '@/useAppService.ts';
+import { PopularDestinationCard } from '@/components/complex/popular-destination-card/PopularDestinationCard.tsx';
+import { FAQSection } from '@/components/complex/faq-section/FaqSections.tsx';
+import { Footer } from '@/components/complex/footer/Footer.tsx';
 
 export function MainPage() {
-  const state = useAppSelector<IAppSlice>(StoreSliceEnum.APP);
+  const { state, ...service } = useAppService();
+
+  useEffect(() => {
+    service.getMostTraveledDestinations();
+  }, []);
 
   return (
     <main className={cs.mainPage}>
-      {/* Hero Section using <section> and h1 */}
       <section className={cs.heroSection} aria-labelledby="hero-title">
         <div className={cs.glowOrb} aria-hidden="true" />
 
@@ -31,8 +36,6 @@ export function MainPage() {
           </div>
         </div>
       </section>
-
-      {/* Search area wrapped in a section with a hidden heading for accessibility */}
       <section
         className={cs.searchContainer}
         aria-label="Flight search filters"
@@ -42,25 +45,39 @@ export function MainPage() {
           <FiltersGroup />
         </FlightSearchProvider>
       </section>
-
-      {/* Future Content Placeholder */}
       <section className={cs.resultsSection}>
         <div className={cs.resultsContainer}>
-          {/*{state.loading ? (*/}
-          {/*  <FlightResultsSkeleton />*/}
-          {/*) : flightResults && flightResults.length > 0 ? (*/}
-          {/*  <FlightResults data={flightResults} />*/}
-          {/*) : (*/}
-          {/*  <EmptyState /> // Custom component for "No flights found"*/}
-          {/*)}*/}
           {state.loading ? (
             <FlightResultsSkeleton />
           ) : (
             <FlightResults data={state?.flightResults} />
           )}
-          {/*<FlightResults data={state?.flightResults} />*/}
         </div>
       </section>
+      <section className="container max-w-[1200px] mx-auto py-12 px-4">
+        {state.loading ? (
+          [...Array(6)].map((_, i) => (
+            <div key={i} className={cs.skeletonCard} />
+          ))
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {state.travelDestinations?.map((item: any, index: number) => (
+              <PopularDestinationCard
+                key={item.destination}
+                destination={item.destination}
+                score={item.analytics?.travelers?.score || 0}
+                index={index}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+      <section>
+        <FAQSection />
+      </section>
+      <footer>
+        <Footer />
+      </footer>
     </main>
   );
 }

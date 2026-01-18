@@ -5,33 +5,20 @@
   background-color: #020617;
   display: flex;
   flex-direction: column;
-
-
-  // Ensure sr-only is defined globally or in your module
-  .srOnly {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
+  padding-top: 10px;
 
   .heroSection {
     position: relative;
-    height: 65vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     overflow: hidden;
-    background: radial-gradient(
-                    circle at 50% 50%,
-                    rgba(30, 58, 138, 0.4) 0%,
-                    rgba(2, 6, 23, 1) 75%
-    );
+    padding: 4rem 1rem 8rem;
+
+    @media (min-width: 768px) {
+      padding: 6rem 2rem 10rem;
+      min-height: auto;
+    }
 
     &::after {
       content: "";
@@ -39,6 +26,7 @@
       inset: 0;
       background-image: url("https://www.transparenttextures.com/patterns/carbon-fibre.png");
       opacity: 0.1;
+      pointer-events: none;
     }
   }
 
@@ -47,40 +35,52 @@
     top: 20%;
     left: 50%;
     transform: translateX(-50%);
-    width: 600px;
+    width: 100%;
+    max-width: 800px;
     height: 400px;
     background: #2563eb;
     filter: blur(150px);
     border-radius: 100%;
-    opacity: 0.15;
+    opacity: 0.2;
     z-index: 1;
   }
 
   .heroContent {
     position: relative;
     z-index: 10;
+    width: 100%;
+    max-width: 1155px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding: 3rem 4rem;
+
+    padding: 2.5rem 1.5rem 4rem;
     border-radius: 2rem;
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+    @media (min-width: 768px) {
+      padding: 4rem 4rem 6rem;
+    }
   }
 
   .heroTitle {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 0.5rem;
 
     @media (min-width: 768px) {
       flex-direction: row;
-      align-items: center;
       gap: 1.5rem;
     }
 
     .titleLight {
-      font-size: 5rem;
+      font-size: 3.5rem;
       font-weight: 200;
       color: #ffffff;
       text-transform: uppercase;
@@ -92,7 +92,7 @@
     }
 
     .titleBold {
-      font-size: 5rem;
+      font-size: 3.5rem;
       font-weight: 900;
       font-style: italic;
       text-transform: uppercase;
@@ -113,37 +113,53 @@
     justify-content: center;
     gap: 1rem;
     margin-top: 1.5rem;
+    width: 100%;
 
     p {
       color: rgba(191, 219, 254, 0.7);
-      font-size: 1.125rem;
+      font-size: 0.875rem;
       font-weight: 300;
       text-transform: uppercase;
-      letter-spacing: 0.3em;
+      letter-spacing: 0.2em;
+
+      @media (min-width: 768px) {
+        font-size: 1.125rem;
+        letter-spacing: 0.3em;
+      }
     }
 
     .line {
       height: 1px;
-      width: 40px;
+      flex-grow: 0;
+      width: 30px;
       background: rgba(96, 165, 250, 0.3);
+
+      @media (min-width: 768px) {
+        width: 60px;
+      }
     }
   }
 
   .searchContainer {
     position: relative;
     z-index: 20;
-    max-width: 1200px;
-    margin: -4rem auto 0;
     width: 100%;
-    padding: 0 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    margin-top: -2.5rem;
+
+    @media (min-width: 768px) {
+      margin-top: -5rem;
+      padding: 0 1.5rem;
+    }
   }
 
   .resultsSection {
     flex: 1;
     max-width: 1200px;
-    margin: 2rem auto;
+    margin: 3rem auto;
     width: 100%;
-    padding: 1.5rem 1.5rem;
+    padding: 0 1.5rem;
   }
 }
-

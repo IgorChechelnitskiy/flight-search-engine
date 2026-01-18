@@ -1,225 +1,256 @@
+@use "@/styles/variables" as vars;
+
 .resultsWrapper {
-  margin-top: -2rem;
+  margin-top: -2.5rem;
   padding-bottom: 4rem;
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
 }
 
 .tableContainer {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
 .table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  text-align: left;
+  border-collapse: collapse;
 
-  thead {
-    background: #f8fafc;
+  // --- DARKER SUBTEXT & LABELS ---
+  // This targets the small text like "Departure", "Landing", and "Incl. taxes"
+  span {
+    color: #1e293b; // Slate-800 for main text
 
-    th {
-      padding: 1rem 1.5rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #64748b;
-      border-bottom: 1px solid #e2e8f0;
+    // Specifically target labels that usually use slate-400/500
+    &[class*="text-slate-"],
+    &[class*="uppercase"] {
+      color: #334155 !important; // Forced Slate-700
+      font-weight: 600;
+      opacity: 1;
+    }
+  }
 
-      &:last-child {
-        text-align: center;
+  // --- DESKTOP VIEW (Table) ---
+  @media (min-width: 769px) {
+    display: table;
+
+    thead {
+      display: table-header-group;
+      background: rgba(255, 255, 255, 0.3);
+
+      th {
+        padding: 1.25rem 1.5rem;
+        text-align: left;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #1e293b; // Darker header text
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    tbody {
+      display: table-row-group;
+
+      .tableRow {
+        display: table-row;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.4);
+        }
+
+        td {
+          display: table-cell;
+          padding: 1.5rem;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+          vertical-align: middle;
+        }
       }
     }
   }
 
-  tbody {
-    tr {
-      background: #ffffff;
-      transition: background 0.2s ease;
+  // --- MOBILE VIEW (Cards) ---
+  @media (max-width: 768px) {
+    display: block;
+    thead {
+      display: none;
+    }
 
-      &:hover {
-        background: #f1f5f9;
-      }
+    tbody {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
 
-      td {
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid #f1f5f9;
-        font-family: inherit;
-        font-size: 0.9375rem;
-        color: #1e293b;
-        vertical-align: top;
+      .tableRow {
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        gap: 0.75rem;
 
-        &:last-child {
-          text-align: center;
-          width: 160px;
+        td {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0;
+          border: none;
+
+          &:first-child {
+            order: 1;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding-bottom: 0.75rem;
+          }
+
+          &:nth-child(5) {
+            order: 2;
+          }
+
+          &:last-child {
+            order: 3;
+            width: 100%;
+            margin-top: 0.5rem;
+          }
         }
       }
     }
   }
 }
 
+.airlineBadge {
+  width: 36px;
+  height: 36px;
+  background: white;
+  color: #2563eb;
+  border-radius: 8px;
+  font-weight: 800;
+  border: 1px solid rgba(37, 99, 235, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .priceText {
   font-size: 1.25rem;
-  font-weight: 800;
-  color: #000000;
-  letter-spacing: -0.02em;
-}
-
-.actionCell {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.actionCell {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.airlineBadge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: #eff6ff;
-  color: #2563eb;
-  border-radius: 6px;
-  font-weight: 800;
-  font-size: 0.7rem;
-  border: 1px solid #dbeafe;
+  font-weight: 900;
+  color: #020617; // Absolute Slate-950 for maximum visibility
 }
 
 .bookButton {
+  width: 100%;
   background: #2563eb;
-  color: white;
-  padding: 0.6rem 1.5rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  transition: all 0.2s;
-  border: 1px solid #1d4ed8;
+  color: #fff;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  border: none;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 
-  &:hover {
-    background: #1d4ed8;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-    transform: translateY(-1px);
+  @media (min-width: 769px) {
+    width: auto;
+    padding: 0.6rem 1.5rem;
   }
 }
 
 .pagination {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  background: rgba(248, 250, 252, 0.6);
-  backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(226, 232, 240, 0.8);
-}
-
-.pageStatus {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-
-  .statusLabel {
-    color: #64748b;
-    font-weight: 500;
-  }
-
-  .statusValue {
-    color: #0f172a;
-    font-weight: 700;
-    padding: 0.2rem 0.5rem;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 4px;
-    border: 1px solid rgba(226, 232, 240, 0.5);
-  }
-}
-
-.navButtonGroup {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.pageIndicator {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: #1e293b;
-  font-weight: 600;
-  font-size: 0.875rem;
-
-  span {
-    color: #94a3b8;
-    font-weight: 400;
-  }
-}
-
-.paginationBtn {
-  display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  height: 36px;
-  padding: 0 1rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: #475569;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  gap: 1.5rem;
+  padding: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
 
-  &:hover:not(:disabled) {
-    background: #ffffff;
-    color: #2563eb;
-    border-color: #2563eb;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -1px rgba(37, 99, 235, 0.06);
-    transform: translateY(-1px);
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0;
   }
 
-  &:active:not(:disabled) {
-    transform: translateY(0);
-    background: #f1f5f9;
-  }
+  .pageStatus {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
 
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    background: #f8fafc;
-    border-color: #e2e8f0;
-    box-shadow: none;
-  }
-
-  svg {
-    transition: transform 0.2s ease;
-    color: #94a3b8;
-  }
-
-  &:hover:not(:disabled) svg {
-    color: #2563eb;
-
-    &:first-child {
-      transform: translateX(-2px);
+    .statusLabel {
+      color: #334155; // Darker Slate-700
+      font-weight: 600;
     }
 
-    &:last-child {
-      transform: translateX(2px);
+    .statusValue {
+      color: #0f172a;
+      font-weight: 800;
+    }
+  }
+
+  .navButtonGroup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+
+    @media (min-width: 768px) {
+      width: auto;
+      gap: 1.5rem;
+    }
+  }
+
+  .pageIndicator {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #0f172a;
+    background: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .paginationBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 40px;
+    padding: 0 1rem;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    &:hover:not(:disabled) {
+      background: #f8fafc;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.15);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    @media (max-width: 480px) {
+      span {
+        display: none;
+      }
+      padding: 0 0.75rem;
     }
   }
 }

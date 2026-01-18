@@ -44,10 +44,23 @@ export default function useAppService() {
     }
   }
 
+  async function getMostTraveledDestinations() {
+    dispatch(action.setLoading(true));
+    try {
+      const travels = await appApiService.getMostTraveledDestinations();
+      dispatch(action.refreshTravelDestinations(travels.slice(0, 6)));
+    } catch (error) {
+      console.error('Search failed', error);
+    } finally {
+      dispatch(action.setLoading(false));
+    }
+  }
+
   return {
     state,
     initAuth,
     getLocations,
     getFlights,
+    getMostTraveledDestinations,
   };
 }

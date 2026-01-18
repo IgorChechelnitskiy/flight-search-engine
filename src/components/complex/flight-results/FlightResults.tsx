@@ -119,7 +119,7 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
       }),
       columnHelper.display({
         id: 'actions',
-        header: () => <div className="text-center">Action</div>,
+        header: () => <div>Action</div>,
         cell: () => (
           <div className={cs.actionCell}>
             <button className={cs.bookButton}>Select</button>

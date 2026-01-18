@@ -24,6 +24,22 @@ class AppApiService {
     );
     return data.data;
   }
+
+  async getMostTraveledDestinations(
+    originCityCode = 'NYC',
+    period = '2017-01'
+  ) {
+    const { data } = await apiConfigurationService.get(
+      '/v1/travel/analytics/air-traffic/traveled',
+      {
+        params: {
+          originCityCode: originCityCode.toUpperCase(),
+          period: period,
+        },
+      }
+    );
+    return data.data;
+  }
 }
 
 export const appApiService = new AppApiService();

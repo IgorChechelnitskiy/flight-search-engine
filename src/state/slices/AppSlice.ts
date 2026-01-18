@@ -8,6 +8,7 @@ const initialState: IAppSlice = {
   flights: undefined,
   locations: undefined,
   flightResults: undefined,
+  travelDestinations: undefined,
 };
 
 function setLoading(state: IAppSlice, action: PayloadAction<boolean>) {
@@ -26,6 +27,13 @@ function refreshFlightResults(state: IAppSlice, action: PayloadAction<any[]>) {
   state.flightResults = action?.payload || state.flightResults;
 }
 
+function refreshTravelDestinations(
+  state: IAppSlice,
+  action: PayloadAction<any[]>
+) {
+  state.travelDestinations = action?.payload || state.travelDestinations;
+}
+
 const AppSlice = createSlice({
   name: StoreSliceEnum.APP,
   initialState,
@@ -34,6 +42,7 @@ const AppSlice = createSlice({
     refreshFlights,
     refreshLocations,
     refreshFlightResults,
+    refreshTravelDestinations,
   },
 });
 
