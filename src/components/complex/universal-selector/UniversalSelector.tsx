@@ -1,11 +1,5 @@
 import { useState } from 'react';
-import {
-  ArrowLeft,
-  ArrowLeftRight,
-  Check,
-  ChevronDown,
-  GitCompareArrows,
-} from 'lucide-react';
+import { ArrowLeft, ArrowLeftRight, Check, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,11 +21,6 @@ const COLLECTIONS: Record<string, ISelectorOption[]> = {
       id: 'round-trip',
       label: 'Round trip',
       icon: <ArrowLeftRight className="h-4 w-4" />,
-    },
-    {
-      id: 'multi-city',
-      label: 'Multi-city',
-      icon: <GitCompareArrows className="h-4 w-4" />,
     },
   ],
   cabinClass: [

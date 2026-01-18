@@ -11,36 +11,42 @@ import {
 } from '@/components/ui/popover';
 
 interface FlightDatePickerProps {
-  date?: Date;
+  date: Date | undefined;
   onChange: (date: Date | undefined) => void;
+  disabled?: boolean;
   placeholder?: string;
 }
 
 export function FlightDatePicker({
   date,
   onChange,
+  disabled,
   placeholder = 'Pick a date',
 }: FlightDatePickerProps) {
   const [open, setOpen] = useState(false);
 
   const handleSelect = (selectedDate: Date | undefined) => {
     onChange(selectedDate);
-    // Explicitly close the popover after selection
     if (selectedDate) {
       setOpen(false);
     }
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={disabled ? false : open} // Force close if disabled
+      onOpenChange={disabled ? undefined : setOpen} // Disable interaction if disabled
+    >
       <PopoverTrigger asChild>
         <Button
+          disabled={disabled} // THIS IS THE KEY FIX
           variant="outline"
           className={cn(
-            // h-12 matches your Autocomplete Input exactly
             'h-12 min-w-50 justify-start text-left font-normal px-3',
             'bg-white border-none shadow-sm hover:bg-slate-50',
-            !date && 'text-slate-400'
+            !date && 'text-slate-400',
+            // Visually dim the input when disabled
+            disabled && 'opacity-40 cursor-not-allowed bg-slate-100'
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4 text-slate-400" />
@@ -60,7 +66,8 @@ export function FlightDatePicker({
           selected={date}
           onSelect={handleSelect}
           initialFocus
-          disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))} // Prevent past dates
+          // Prevent selecting dates in the past
+          disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
         />
       </PopoverContent>
     </Popover>

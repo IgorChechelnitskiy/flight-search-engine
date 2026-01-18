@@ -7,46 +7,50 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import type { IPassengerCounts } from '@/const/interfaces/components/IPassengerCounts.ts';
-
-const DEFAULT_PASSENGERS: IPassengerCounts = {
-  adults: 1,
-  children: 0,
-  infants: 0,
-};
+import {
+  type IPassengerCounts,
+  useFlightSearch,
+} from '@/state/context/FlightSearchContext.tsx';
 
 export function PassengerSelector() {
-  const [savedCounts, setSavedCounts] =
-    useState<IPassengerCounts>(DEFAULT_PASSENGERS);
+  // 1. Hook into Global Context
+  const { passengerCounts, setPassengerCounts } = useFlightSearch();
+
+  // 2. Local Draft State for the Popover UI
   const [draftCounts, setDraftCounts] =
-    useState<IPassengerCounts>(DEFAULT_PASSENGERS);
+    useState<IPassengerCounts>(passengerCounts);
   const [open, setOpen] = useState(false);
 
-  const totalPassengers =
-    savedCounts.adults + savedCounts.children + savedCounts.infants;
-
+  // Sync draft with global state whenever the popover opens
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
     if (newOpen) {
-      setDraftCounts(savedCounts);
+      setDraftCounts(passengerCounts);
     }
   };
 
+  const totalPassengers =
+    passengerCounts.adults + passengerCounts.children + passengerCounts.infants;
+
   const updateDraft = (key: keyof IPassengerCounts, delta: number) => {
-    setDraftCounts((prev) => ({
-      ...prev,
-      [key]: Math.max(key === 'adults' ? 1 : 0, prev[key] + delta),
-    }));
+    setDraftCounts((prev) => {
+      const newValue = Math.max(key === 'adults' ? 1 : 0, prev[key] + delta);
+
+      // Validation: Number of infants can't exceed number of adults
+      if (key === 'infants' && newValue > prev.adults) return prev;
+      if (key === 'adults' && newValue < prev.infants) return prev;
+
+      return { ...prev, [key]: newValue };
+    });
   };
 
   const handleDone = () => {
-    setSavedCounts(draftCounts);
+    // 3. Save to Global Context (This fixes the "adults didn't change" issue)
+    setPassengerCounts(draftCounts);
     setOpen(false);
   };
 
   const handleCancel = () => {
-    setSavedCounts(DEFAULT_PASSENGERS);
-    setDraftCounts(DEFAULT_PASSENGERS);
     setOpen(false);
   };
 
@@ -55,7 +59,7 @@ export function PassengerSelector() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="flex h-10 min-w-25  gap-2 px-3 bg-white border-none hover:bg-slate-100 focus-visible:ring-0"
+          className="flex h-10 min-w-25 gap-2 px-3 bg-white border-none hover:bg-slate-100 focus-visible:ring-0"
         >
           <User className="h-4 w-4 text-slate-500" />
           <span className="text-sm font-medium">{totalPassengers}</span>
@@ -83,17 +87,22 @@ export function PassengerSelector() {
           />
           <PassengerRow
             label="Infants"
-            sublabel="Under 2"
+            sublabel="Under 2 (on lap)"
             count={draftCounts.infants}
             onUpdate={(d) => updateDraft('infants', d)}
+            // Tooltip or helper logic can be added here
+            max={draftCounts.adults}
           />
+
+          {draftCounts.infants === draftCounts.adults &&
+            draftCounts.infants > 0 && (
+              <p className="text-[10px] text-amber-600 bg-amber-50 p-2 rounded">
+                Maximum 1 infant per adult allowed.
+              </p>
+            )}
+
           <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-blue-600 font-semibold hover:bg-blue-50"
-              onClick={handleCancel}
-            >
+            <Button variant="ghost" size="sm" onClick={handleCancel}>
               Cancel
             </Button>
             <Button
@@ -117,6 +126,7 @@ interface PassengerRowProps {
   count: number;
   onUpdate: (delta: number) => void;
   min?: number;
+  max?: number;
 }
 
 function PassengerRow({
@@ -125,6 +135,7 @@ function PassengerRow({
   count,
   onUpdate,
   min = 0,
+  max = 9,
 }: PassengerRowProps) {
   return (
     <div className="flex items-center justify-between">
@@ -148,6 +159,7 @@ function PassengerRow({
           size="icon"
           className="h-8 w-8 rounded-md border-slate-200"
           onClick={() => onUpdate(1)}
+          disabled={count >= max}
         >
           <Plus className="h-3 w-3" />
         </Button>

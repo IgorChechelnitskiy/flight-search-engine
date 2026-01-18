@@ -15,13 +15,33 @@ export interface FlightLocation {
   id: string;
 }
 
+export interface IPassengerCounts {
+  adults: number;
+  children: number;
+  infants: number;
+}
+
 interface FlightSearchContextType {
   fromLocation: FlightLocation | null;
   toLocation: FlightLocation | null;
   setFromLocation: (loc: FlightLocation | null) => void;
   setToLocation: (loc: FlightLocation | null) => void;
   getSuggestions: (keyword: string) => Promise<FlightLocation[]>;
-  swapLocations: () => void; // Add this
+  swapLocations: () => void;
+  tripType: 'one-way' | 'round-trip';
+  cabinClass: string;
+  setTripType: (type: 'one-way' | 'round-trip') => void;
+  setCabinClass: (cabin: string) => void;
+  passengerCounts: IPassengerCounts;
+  setPassengerCounts: (counts: IPassengerCounts) => void;
+  searchParams: {
+    originLocationCode: string;
+    destinationLocationCode: string;
+    travelClass: string;
+    adults: number;
+    children?: number;
+    infants?: number;
+  } | null;
 }
 
 const FlightSearchContext = createContext<FlightSearchContextType | undefined>(
@@ -31,6 +51,29 @@ const FlightSearchContext = createContext<FlightSearchContextType | undefined>(
 export function FlightSearchProvider({ children }: { children: ReactNode }) {
   const [fromLocation, setFromLocation] = useState<FlightLocation | null>(null);
   const [toLocation, setToLocation] = useState<FlightLocation | null>(null);
+  const [tripType, setTripType] = useState<'one-way' | 'round-trip'>('one-way');
+  const [cabinClass, setCabinClass] = useState('ECONOMY');
+  const [passengerCounts, setPassengerCounts] = useState<IPassengerCounts>({
+    adults: 1,
+    children: 0,
+    infants: 0,
+  });
+
+  const searchParams =
+    fromLocation && toLocation
+      ? {
+          originLocationCode: fromLocation.iataCode,
+          destinationLocationCode: toLocation.iataCode,
+          travelClass: cabinClass,
+          adults: passengerCounts.adults,
+          ...(passengerCounts.children > 0 && {
+            children: passengerCounts.children,
+          }),
+          ...(passengerCounts.infants > 0 && {
+            infants: passengerCounts.infants,
+          }),
+        }
+      : null;
 
   const getSuggestions = async (keyword: string): Promise<FlightLocation[]> => {
     try {
@@ -54,8 +97,15 @@ export function FlightSearchProvider({ children }: { children: ReactNode }) {
         toLocation,
         setFromLocation,
         setToLocation,
+        tripType,
+        setTripType,
+        cabinClass,
+        setCabinClass,
         getSuggestions,
-        swapLocations, // Export it here
+        swapLocations,
+        searchParams,
+        passengerCounts,
+        setPassengerCounts,
       }}
     >
       {children}
