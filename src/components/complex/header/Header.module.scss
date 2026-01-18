@@ -1,17 +1,34 @@
+@use "@/styles/variables" as vars;
+
 .header {
   position: sticky;
   top: 0;
   width: 100%;
-  z-index: 50;
-
-  background: rgba(2, 6, 23, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   height: 72px;
   display: flex;
   align-items: center;
+}
+
+.logoLight {
+  font-size: 1.5rem;
+  font-weight: 200;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.logoBold {
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-style: italic;
+  background: linear-gradient(to right, #60a5fa, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
 }
 
 .container {
@@ -21,46 +38,4 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.logoGroup {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 0.9;
-  }
-}
-
-.logoLight {
-  font-size: 1.5rem;
-  font-weight: 300;
-  letter-spacing: -0.02em;
-  color: #94a3b8; // slate-400
-  text-transform: uppercase;
-}
-
-.logoBold {
-  font-size: 1.5rem;
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  color: #2563eb; // blue-600
-  text-transform: uppercase;
-}
-
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.avatarCircle {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }

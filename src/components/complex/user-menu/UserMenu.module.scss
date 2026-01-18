@@ -1,0 +1,110 @@
+@use "@/styles/variables" as vars;
+
+.triggerBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+  height: 44px;
+
+  &:hover, &.open {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.avatar {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: #1e3a8a;
+  color: #1e3a8a;
+}
+
+.userName {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-right: 0.25rem;
+}
+
+.chevron {
+  color: rgba(255, 255, 255, 0.6);
+  transition: transform 0.2s ease;
+
+  &.rotated {
+    transform: rotate(180deg);
+  }
+}
+
+// DROPDOWN CONTENT (Glassmorphism)
+.dropdownContent {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1.25rem;
+  padding: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  z-index: 9999 !important; // HIGHER THAN HEADER
+  margin-top: 0.5rem;
+}
+
+.labelSection {
+  padding: 0.5rem 0.75rem;
+
+  .accountLabel {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569; // Darker for visibility
+  }
+
+  .email {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+}
+
+.menuItem {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #1e293b;
+  cursor: pointer;
+  outline: none;
+
+  svg {
+    margin-right: 0.75rem;
+    opacity: 0.7;
+  }
+
+  &:focus, &:hover {
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+
+    svg {
+      opacity: 1;
+    }
+  }
+
+  &.logout {
+    color: #ef4444;
+
+    &:focus {
+      background: rgba(239, 68, 68, 0.1);
+    }
+  }
+}
+
+.separator {
+  background: rgba(0, 0, 0, 0.05);
+  margin: 0.4rem 0;
+}
