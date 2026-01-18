@@ -1,5 +1,12 @@
-import { useState } from 'react';
-import { ArrowLeft, ArrowLeftRight, Check, ChevronDown } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowLeftRight,
+  Banknote,
+  Check,
+  ChevronDown,
+  Coins,
+  CreditCard,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { ISelectorOption } from '@/const/interfaces/components/ISelectorOption.ts';
+import { useFlightSearch } from '@/state/context/FlightSearchContext.tsx';
 
 const COLLECTIONS: Record<string, ISelectorOption[]> = {
   flightType: [
@@ -29,6 +37,23 @@ const COLLECTIONS: Record<string, ISelectorOption[]> = {
     { id: 'BUSINESS', label: 'Business' },
     { id: 'FIRST', label: 'First' },
   ],
+  currency: [
+    {
+      id: 'USD',
+      label: 'USD $',
+      icon: <Banknote className="h-4 w-4 text-green-600" />,
+    },
+    {
+      id: 'EUR',
+      label: 'EUR €',
+      icon: <Coins className="h-4 w-4 text-blue-600" />,
+    },
+    {
+      id: 'GBP',
+      label: 'GBP £',
+      icon: <CreditCard className="h-4 w-4 text-purple-600" />,
+    },
+  ],
 };
 
 interface UniversalSelectorProps {
@@ -43,48 +68,56 @@ export function UniversalSelector({
   className,
 }: UniversalSelectorProps) {
   const options = COLLECTIONS[collection];
-  const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState(options[0].id);
-  const current = options.find((opt) => opt.id === selectedId) || options[0];
-  const handleSelect = (id: string) => {
-    setSelectedId(id);
-    if (onChange) onChange(id);
+
+  const { currency, tripType, cabinClass } = useFlightSearch();
+
+  const getSelectedId = () => {
+    if (collection === 'currency') return currency;
+    if (collection === 'flightType') return tripType;
+    if (collection === 'cabinClass') return cabinClass;
+    return options[0].id;
   };
 
+  const selectedId = getSelectedId();
+  const current = options.find((opt) => opt.id === selectedId) || options[0];
+
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
           className={cn(
-            'flex h-10 min-w-50 gap-2 px-3 bg-white border-none hover:bg-slate-100 focus-visible:ring-0',
+            'flex h-10 min-w-[140px] justify-between gap-2 px-3 bg-white border-none hover:bg-slate-100 focus:ring-0',
             className
           )}
         >
-          {current.icon && <span>{current.icon}</span>}
-          <span className="text-sm font-medium">{current.label}</span>
-          <ChevronDown
-            className={cn(
-              'h-4 w-4 opacity-50 transition-transform duration-200',
-              open && 'rotate-180'
-            )}
-          />
+          <div className="flex items-center gap-2">
+            {current.icon && <span>{current.icon}</span>}
+            <span className="text-sm font-medium">{current.label}</span>
+          </div>
+          <ChevronDown className="h-4 w-4 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-[180px]">
+
+      <DropdownMenuContent align="start" className="w-[180px] z-[100]">
         {options.map((option) => (
           <DropdownMenuItem
             key={option.id}
-            onClick={() => handleSelect(option.id)}
-            className="flex items-center justify-between cursor-pointer"
+            onClick={() => {
+              if (onChange) onChange(option.id);
+            }}
+            className="flex items-center justify-between cursor-pointer focus:bg-slate-100"
           >
-            <span
-              className={cn(
-                selectedId === option.id && 'font-semibold text-blue-600'
-              )}
-            >
-              {option.label}
-            </span>
+            <div className="flex items-center gap-2">
+              {option.icon && <span>{option.icon}</span>}
+              <span
+                className={cn(
+                  selectedId === option.id && 'font-semibold text-blue-600'
+                )}
+              >
+                {option.label}
+              </span>
+            </div>
             {selectedId === option.id && (
               <Check className="h-4 w-4 text-blue-600" />
             )}

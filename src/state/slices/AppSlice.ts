@@ -11,7 +11,7 @@ const initialState: IAppSlice = {
 };
 
 function setLoading(state: IAppSlice, action: PayloadAction<boolean>) {
-  state.loading = action?.payload || state.loading;
+  state.loading = action.payload;
 }
 
 function refreshFlights(state: IAppSlice, action: PayloadAction<any[]>) {

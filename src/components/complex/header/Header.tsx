@@ -1,4 +1,5 @@
 import cs from './Header.module.scss';
+import { UserMenu } from '@/components/complex/user-menu/UserMenu.tsx';
 
 export default function Header() {
   return (
@@ -11,10 +12,10 @@ export default function Header() {
 
         <nav className={cs.nav}>
           {/* Add navigation links here later if needed */}
-          <div className={cs.userPlaceholder}>
-            {/* <UserMenu /> */}
-            <div className={cs.avatarCircle} />
-          </div>
+          {/*<div className={cs.userPlaceholder}>*/}
+          <UserMenu />
+          {/*<div className={cs.avatarCircle} />*/}
+          {/*</div>*/}
         </nav>
       </div>
     </header>

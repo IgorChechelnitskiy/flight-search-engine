@@ -1,13 +1,15 @@
-import { EllipsisVertical } from 'lucide-react';
-
-import cs from './UserMenu.module.scss';
+import { useState } from 'react';
 import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
+  ChevronDown,
+  Cloud,
+  Heart,
+  LogOut,
+  Settings,
+  Ticket,
+  User,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,153 +18,91 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { IUserMenu } from '@/const/interfaces/IUserMenu.ts';
-import { type JSX } from 'react';
+import { Button } from '@/components/ui/button';
 
-export function UserMenu({ user, isLoading }: IUserMenu): JSX.Element {
-  // const { logOut } = useAppService();
-  // const navigate = useNavigate();
-  // const { openConfirmationDialog } = useDialogService();
-
-  // async function handleLogout() {
-  //   setTimeout(async () => {
-  //     const confirmedLogOut = await openConfirmationDialog({
-  //       headerTitle: 'Logging out',
-  //       text: `You are about to log out from your account.`,
-  //       primaryButtonValue: 'Log Out',
-  //       secondaryButtonValue: 'Cancel',
-  //     });
-  //
-  //     if (!confirmedLogOut) return;
-  //
-  //     logOut();
-  //   }, 100);
-  // }
+export function UserMenu() {
+  const [open, setOpen] = useState(false);
 
   return (
-    <SidebarMenu className={cs.sidebarMenu}>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger className={cs.dropdownMenuTrigger} asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              {isLoading ? (
-                <div className={cs.skeletonBlock}>
-                  <Skeleton className={cs.skeletonRound} />
-                  <div className={cs.skeletonBars}>
-                    <Skeleton className={cs.skeletonLongBar} />
-                    <Skeleton className={cs.skeletonShortBar} />
-                  </div>
-                </div>
-              ) : (
-                ((
-                  <>
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      {user?.thumbnail && (
-                        <AvatarImage src={user.thumbnail} alt="avatar" />
-                      )}
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className={cn(
+            'flex h-10 items-center gap-2 px-2 hover:bg-slate-100/50 rounded-full transition-all focus-visible:ring-0',
+            open && 'bg-slate-100/80'
+          )}
+        >
+          <Avatar className="h-8 w-8 border-2 border-slate-300 shadow-sm transition-colors">
+            <AvatarImage src="" />
+            <AvatarFallback className="bg-[#1e3a8a] text-slate-200 text-[10px] font-bold tracking-tight">
+              IG
+            </AvatarFallback>
+          </Avatar>
 
-                      {/*<AvatarFallback className="rounded-lg">*/}
-                      {/*  {getInitials(*/}
-                      {/*    undefined,*/}
-                      {/*    user?.firstName,*/}
-                      {/*    user?.lastName*/}
-                      {/*  )}*/}
-                      {/*</AvatarFallback>*/}
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span
-                        className={`${cs.userText} she-text`}
-                      >{`${user?.firstName} ${user?.lastName}`}</span>
-                      <span className={`${cs.userText} she-subtext`}>
-                        {user?.email}
-                      </span>
-                    </div>
-                    <EllipsisVertical
-                      size={24}
-                      color="#71717A"
-                      style={{ maxWidth: '24px' }}
-                    />
-                  </>
-                ) as JSX.Element)
-              )}
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-48 rounded-lg"
-            side="bottom"
-            align="start"
-            sideOffset={4}
-          >
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                className={cs.dropdownMenuItem}
-                // onClick={() => navigate('/profile')}
-              >
-                {/*<SheIcon*/}
-                {/*  className={cs.dropdownMenuItemIcon}*/}
-                {/*  icon={UserRoundCog}*/}
-                {/*  maxWidth="20px"*/}
-                {/*  color="#71717A"*/}
-                {/*/>*/}
-                <span className={`${cs.dropdownMenuItemText} she-text`}>
-                  Account
-                </span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className={cs.dropdownMenuItem}>
-                {/*<SheIcon*/}
-                {/*  className={cs.dropdownMenuItemIcon}*/}
-                {/*  icon={UserRoundPlus}*/}
-                {/*  maxWidth="20px"*/}
-                {/*  color="#71717A"*/}
-                {/*/>*/}
-                <span className={`${cs.dropdownMenuItemText} she-text`}>
-                  Invitations
-                </span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className={cs.dropdownMenuItem}>
-                {/*<SheIcon*/}
-                {/*  className={cs.dropdownMenuItemIcon}*/}
-                {/*  icon={CreditCard}*/}
-                {/*  maxWidth="20px"*/}
-                {/*  color="#71717A"*/}
-                {/*/>*/}
-                <span className={`${cs.dropdownMenuItemText} she-text`}>
-                  Billing
-                </span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className={cs.dropdownMenuItem}>
-                {/*<SheIcon*/}
-                {/*  className={cs.dropdownMenuItemIcon}*/}
-                {/*  icon={Cog}*/}
-                {/*  maxWidth="20px"*/}
-                {/*  color="#71717A"*/}
-                {/*/>*/}
-                <span className={`${cs.dropdownMenuItemText} she-text`}>
-                  Administration
-                </span>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className={cs.dropdownMenuItemLogOut}
-              // onClick={handleLogout}
-            >
-              {/*<SheIcon*/}
-              {/*  className={cs.dropdownMenuItemIcon}*/}
-              {/*  icon={LogOut}*/}
-              {/*  maxWidth="20px"*/}
-              {/*  color="#71717A"*/}
-              {/*/>*/}
-              <span className={`${cs.dropdownMenuItemText} she-text`}>
-                Log out
-              </span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+          <div className="hidden md:flex flex-col items-start leading-tight">
+            <span className="text-xs font-semibold text-slate-500">Igor</span>
+          </div>
+
+          <ChevronDown
+            className={cn(
+              'h-3 w-3 text-slate-400 transition-transform duration-200',
+              open && 'rotate-180'
+            )}
+          />
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent
+        align="end"
+        className="w-56 mt-1 p-1 rounded-xl shadow-xl border-slate-200 z-[100]"
+      >
+        <div className="px-3 py-2">
+          <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+            Account
+          </p>
+          <p className="text-sm font-semibold text-slate-900 truncate">
+            igor@example.com
+          </p>
+        </div>
+
+        <DropdownMenuSeparator className="bg-slate-100" />
+
+        <DropdownMenuGroup>
+          <DropdownMenuItem className="py-2.5 cursor-pointer rounded-lg focus:bg-blue-50 focus:text-blue-700">
+            <User className="mr-2 h-4 w-4 opacity-70" />
+            <span className="font-medium">My Profile</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="py-2.5 cursor-pointer rounded-lg focus:bg-blue-50 focus:text-blue-700">
+            <Ticket className="mr-2 h-4 w-4 opacity-70" />
+            <span className="font-medium">My Bookings</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="py-2.5 cursor-pointer rounded-lg focus:bg-blue-50 focus:text-blue-700">
+            <Heart className="mr-2 h-4 w-4 opacity-70" />
+            <span className="font-medium">Saved Flights</span>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator className="bg-slate-100" />
+
+        <DropdownMenuGroup>
+          <DropdownMenuItem className="py-2.5 cursor-pointer rounded-lg focus:bg-blue-50 focus:text-blue-700">
+            <Settings className="mr-2 h-4 w-4 opacity-70" />
+            <span className="font-medium">Settings</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="py-2.5 cursor-pointer rounded-lg focus:bg-blue-50 focus:text-blue-700">
+            <Cloud className="mr-2 h-4 w-4 opacity-70" />
+            <span className="font-medium">Support</span>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator className="bg-slate-100" />
+
+        <DropdownMenuItem className="py-2.5 cursor-pointer rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700">
+          <LogOut className="mr-2 h-4 w-4" />
+          <span className="font-semibold">Log out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

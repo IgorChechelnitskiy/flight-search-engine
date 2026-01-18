@@ -1,16 +1,14 @@
 .resultsWrapper {
-  margin-top: 2rem;
+  margin-top: -2rem;
   padding-bottom: 4rem;
-  animation: slideUp 0.4s ease-out;
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .tableContainer {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
+  background: white;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2),
-  0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
@@ -21,52 +19,68 @@
   text-align: left;
 
   thead {
-    background: #f1f5f9; // slate-100
+    background: #f8fafc;
 
     th {
       padding: 1rem 1.5rem;
       font-size: 0.75rem;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #475569; // slate-600
-      border-bottom: 2px solid #e2e8f0;
+      color: #64748b;
+      border-bottom: 1px solid #e2e8f0;
+
+      &:last-child {
+        text-align: center;
+      }
     }
   }
 
   tbody {
     tr {
-      transition: all 0.2s ease;
-      background: white;
+      background: #ffffff;
+      transition: background 0.2s ease;
 
       &:hover {
-        background: #f8fafc; // slate-50
-        transform: scale(1.002);
-        box-shadow: inset 4px 0 0 #2563eb; // Blue accent on hover
+        background: #f1f5f9;
       }
 
       td {
         padding: 1.25rem 1.5rem;
         border-bottom: 1px solid #f1f5f9;
-        color: #1e293b; // slate-900
+        font-family: inherit;
         font-size: 0.9375rem;
+        color: #1e293b;
+        vertical-align: top;
+
+        &:last-child {
+          text-align: center;
+          width: 160px;
+        }
       }
     }
   }
 }
 
-.actionCell {
-  display: flex;
-  align-items: center;
-
-  .bookButton {
-    margin: 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
+.priceText {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #000000;
+  letter-spacing: -0.02em;
 }
 
+.actionCell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.actionCell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
 
 .airlineBadge {
   display: flex;
@@ -82,26 +96,24 @@
   border: 1px solid #dbeafe;
 }
 
-.priceText {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #0f172a; // Deep Navy
-  letter-spacing: -0.02em;
-}
-
 .bookButton {
   background: #2563eb;
   color: white;
-  padding: 0.6rem 1.2rem;
+  padding: 0.6rem 1.5rem;
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 600;
   transition: all 0.2s;
   border: 1px solid #1d4ed8;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background: #1d4ed8;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    transform: translateY(-1px);
   }
 }
 
@@ -109,65 +121,80 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 1.5rem;
-  background: #ffffff;
-  border-top: 1px solid #edf2f7;
+  padding: 1rem 1.5rem;
+  background: rgba(248, 250, 252, 0.6);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .pageStatus {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   font-size: 0.875rem;
 
   .statusLabel {
-    color: #64748b; // slate-500
+    color: #64748b;
+    font-weight: 500;
   }
 
   .statusValue {
-    font-weight: 600;
-    color: #1e293b; // slate-900
+    color: #0f172a;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    border: 1px solid rgba(226, 232, 240, 0.5);
   }
 }
 
 .navButtonGroup {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .pageIndicator {
-  padding: 0 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   color: #1e293b;
-  min-width: 60px;
-  text-align: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+
+  span {
+    color: #94a3b8;
+    font-weight: 400;
+  }
 }
 
 .paginationBtn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.875rem;
+  height: 36px;
+  padding: 0 1rem;
   font-size: 0.8125rem;
   font-weight: 600;
   color: #475569;
-  background: #ffffff;
+  background: white;
   border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
   &:hover:not(:disabled) {
-    background: #f8fafc;
-    border-color: #cbd5e1;
+    background: #ffffff;
     color: #2563eb;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border-color: #2563eb;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -1px rgba(37, 99, 235, 0.06);
+    transform: translateY(-1px);
   }
 
   &:active:not(:disabled) {
-    transform: translateY(1px);
+    transform: translateY(0);
     background: #f1f5f9;
   }
 
@@ -175,26 +202,24 @@
     opacity: 0.4;
     cursor: not-allowed;
     background: #f8fafc;
+    border-color: #e2e8f0;
+    box-shadow: none;
   }
 
   svg {
-    // Making icons slightly more prominent
+    transition: transform 0.2s ease;
     color: #94a3b8;
   }
 
   &:hover:not(:disabled) svg {
     color: #2563eb;
-  }
-}
 
-// Keyframes for the entrance
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    &:first-child {
+      transform: translateX(-2px);
+    }
+
+    &:last-child {
+      transform: translateX(2px);
+    }
   }
 }

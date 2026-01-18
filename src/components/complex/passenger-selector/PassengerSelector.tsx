@@ -13,15 +13,10 @@ import {
 } from '@/state/context/FlightSearchContext.tsx';
 
 export function PassengerSelector() {
-  // 1. Hook into Global Context
   const { passengerCounts, setPassengerCounts } = useFlightSearch();
-
-  // 2. Local Draft State for the Popover UI
   const [draftCounts, setDraftCounts] =
     useState<IPassengerCounts>(passengerCounts);
   const [open, setOpen] = useState(false);
-
-  // Sync draft with global state whenever the popover opens
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
     if (newOpen) {
@@ -36,7 +31,6 @@ export function PassengerSelector() {
     setDraftCounts((prev) => {
       const newValue = Math.max(key === 'adults' ? 1 : 0, prev[key] + delta);
 
-      // Validation: Number of infants can't exceed number of adults
       if (key === 'infants' && newValue > prev.adults) return prev;
       if (key === 'adults' && newValue < prev.infants) return prev;
 
@@ -45,7 +39,6 @@ export function PassengerSelector() {
   };
 
   const handleDone = () => {
-    // 3. Save to Global Context (This fixes the "adults didn't change" issue)
     setPassengerCounts(draftCounts);
     setOpen(false);
   };

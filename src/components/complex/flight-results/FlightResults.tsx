@@ -8,6 +8,8 @@ import {
 } from '@tanstack/react-table';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import cs from './FlightResults.module.scss';
+import { FlightChart } from '@/components/complex/flight-chart/FlightChart.tsx';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface FlightOffer {
   id: string;
@@ -19,13 +21,21 @@ interface FlightOffer {
 const columnHelper = createColumnHelper<FlightOffer>();
 
 export function FlightResults({ data }: { data: FlightOffer[] }) {
-  // 1. Re-introduce the pagination state
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
 
-  // 2. Use your ORIGINAL working columns
+  const chartData = useMemo(() => {
+    return (data || [])
+      .map((flight) => ({
+        airline: flight.validatingAirlineCodes?.[0] || 'N/A',
+        price: parseFloat(flight.price?.total || '0'),
+        currency: flight.price?.currency, // Pass this to the chart
+      }))
+      .sort((a, b) => a.price - b.price);
+  }, [data]);
+
   const columns = useMemo(
     () => [
       columnHelper.accessor('validatingAirlineCodes', {
@@ -60,10 +70,38 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
           ),
         }
       ),
+      columnHelper.accessor(
+        (row) => {
+          const segments = row.itineraries[0].segments;
+          return segments[segments.length - 1].arrival.at;
+        },
+        {
+          id: 'arrival',
+          header: 'Arrival',
+          cell: (info) => (
+            <div className="flex flex-col">
+              <span className="font-bold text-slate-900">
+                {new Date(info.getValue()).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false,
+                })}
+              </span>
+              <span className="text-[10px] text-slate-400 uppercase font-medium">
+                Landing
+              </span>
+            </div>
+          ),
+        }
+      ),
       columnHelper.accessor((row) => row.itineraries[0].duration, {
         id: 'duration',
         header: 'Duration',
-        cell: (info) => info.getValue().replace('PT', '').toLowerCase(),
+        cell: (info) => (
+          <span className="font-bold text-slate-900">
+            {info.getValue().replace('PT', '').toLowerCase()}
+          </span>
+        ),
       }),
       columnHelper.accessor('price.total', {
         header: 'Fare',
@@ -81,7 +119,7 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
       }),
       columnHelper.display({
         id: 'actions',
-        header: () => <div className="text-center">Action</div>, // Center header text too
+        header: () => <div className="text-center">Action</div>,
         cell: () => (
           <div className={cs.actionCell}>
             <button className={cs.bookButton}>Select</button>
@@ -100,13 +138,14 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
     },
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(), // Required!
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   if (!data || data.length === 0) return null;
 
   return (
     <section className={cs.resultsWrapper} aria-label="Flight search results">
+      <FlightChart data={chartData} />
       <div className={cs.tableContainer}>
         <table className={cs.table}>
           <thead>
@@ -124,7 +163,6 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
             ))}
           </thead>
           <tbody>
-            {/* table.getRowModel().rows automatically handles the pagination slice (e.g. 0-10) */}
             {table.getRowModel().rows.map((row) => (
               <tr key={row.id} className={cs.tableRow}>
                 {row.getVisibleCells().map((cell) => (
@@ -136,9 +174,6 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
             ))}
           </tbody>
         </table>
-
-        {/* 3. Re-introduce the Pagination Controls */}
-        {/* Pagination Controls */}
         <div className={cs.pagination}>
           <div className={cs.pageStatus}>
             <span className={cs.statusLabel}>Showing</span>
@@ -187,5 +222,70 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
         </div>
       </div>
     </section>
+  );
+}
+
+const SKELETON_BAR_HEIGHTS = [
+  45, 72, 38, 65, 90, 52, 30, 85, 42, 60, 75, 55, 40, 68, 82,
+];
+
+export function FlightResultsSkeleton() {
+  return (
+    <div className="space-y-8 w-full animate-in fade-in duration-500">
+      <div className="p-6 bg-white rounded-xl border border-slate-200 shadow-sm">
+        <div className="flex flex-col gap-2 mb-6">
+          <Skeleton className="h-6 w-48" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+        <div className="flex items-end gap-3 h-[250px] px-2">
+          {SKELETON_BAR_HEIGHTS.map((height, i) => (
+            <Skeleton
+              key={i}
+              className="flex-1 rounded-t-sm"
+              style={{
+                height: `${height}%`,
+                opacity: 1 - i * 0.05,
+              }}
+            />
+          ))}
+        </div>
+        <div className="flex justify-between mt-4 px-2">
+          <Skeleton className="h-3 w-10" />
+          <Skeleton className="h-3 w-10" />
+          <Skeleton className="h-3 w-10" />
+        </div>
+      </div>
+      <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+        <div className="flex items-center gap-4 p-4 bg-slate-50 border-b border-slate-200">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-4 flex-1" />
+          ))}
+        </div>
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="flex items-center justify-between p-6 border-b border-slate-100 last:border-none"
+          >
+            <div className="flex items-center gap-4 flex-[2]">
+              <Skeleton className="h-12 w-12 rounded-lg" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            </div>
+            <div className="flex-1 flex flex-col gap-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+            <div className="flex-1">
+              <Skeleton className="h-6 w-24 rounded-full" />
+            </div>
+            <div className="flex-1 flex justify-end">
+              <Skeleton className="h-10 w-28 rounded-lg" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

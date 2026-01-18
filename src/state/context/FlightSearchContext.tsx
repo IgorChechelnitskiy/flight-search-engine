@@ -34,6 +34,8 @@ interface FlightSearchContextType {
   setCabinClass: (cabin: string) => void;
   passengerCounts: IPassengerCounts;
   setPassengerCounts: (counts: IPassengerCounts) => void;
+  currency: string;
+  setCurrency: (currency: string) => void;
   searchParams: {
     originLocationCode: string;
     destinationLocationCode: string;
@@ -49,6 +51,7 @@ const FlightSearchContext = createContext<FlightSearchContextType | undefined>(
 );
 
 export function FlightSearchProvider({ children }: { children: ReactNode }) {
+  const [currency, setCurrency] = useState<string>('USD');
   const [fromLocation, setFromLocation] = useState<FlightLocation | null>(null);
   const [toLocation, setToLocation] = useState<FlightLocation | null>(null);
   const [tripType, setTripType] = useState<'one-way' | 'round-trip'>('one-way');
@@ -93,6 +96,8 @@ export function FlightSearchProvider({ children }: { children: ReactNode }) {
   return (
     <FlightSearchContext.Provider
       value={{
+        currency,
+        setCurrency,
         fromLocation,
         toLocation,
         setFromLocation,
@@ -113,7 +118,6 @@ export function FlightSearchProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// THIS WAS MISSING:
 export const useFlightSearch = () => {
   const context = useContext(FlightSearchContext);
   if (!context) {

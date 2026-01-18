@@ -1,7 +1,10 @@
 import cs from './MainPage.module.scss';
 import { FlightSearchProvider } from '@/state/context/FlightSearchContext';
 import { FiltersGroup } from '@/components/complex/filters-group/FiltersGroup.tsx';
-import { FlightResults } from '@/components/complex/flight-results/FlightResults.tsx';
+import {
+  FlightResults,
+  FlightResultsSkeleton,
+} from '@/components/complex/flight-results/FlightResults.tsx';
 import { useAppSelector } from '@/hooks/redux.ts';
 import type { IAppSlice } from '@/const/store-slices/IAppSlice.ts';
 import { StoreSliceEnum } from '@/const/enums/StoreSliceEnum.ts';
@@ -42,7 +45,21 @@ export function MainPage() {
 
       {/* Future Content Placeholder */}
       <section className={cs.resultsSection}>
-        <FlightResults data={state?.flightResults} />
+        <div className={cs.resultsContainer}>
+          {/*{state.loading ? (*/}
+          {/*  <FlightResultsSkeleton />*/}
+          {/*) : flightResults && flightResults.length > 0 ? (*/}
+          {/*  <FlightResults data={flightResults} />*/}
+          {/*) : (*/}
+          {/*  <EmptyState /> // Custom component for "No flights found"*/}
+          {/*)}*/}
+          {state.loading ? (
+            <FlightResultsSkeleton />
+          ) : (
+            <FlightResults data={state?.flightResults} />
+          )}
+          {/*<FlightResults data={state?.flightResults} />*/}
+        </div>
       </section>
     </main>
   );
