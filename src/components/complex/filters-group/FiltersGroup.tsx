@@ -1,9 +1,17 @@
 import cs from './FiltersGroup.module.scss';
 import { useState } from 'react';
-import { UniversalSelector } from '@/components/complex/universal-selector/UniversalSelector.tsx';
-import { PassengerSelector } from '@/components/complex/passenger-selector/PassengerSelector.tsx';
-import { FlightAutocomplete } from '@/components/complex/flight-autocomplite/FlightAutocomplite.tsx';
-import { FlightDatePicker } from '@/components/complex/flight-datepicker/FlightDatepicker.tsx';
+import {
+  UniversalSelector
+} from '@/components/complex/universal-selector/UniversalSelector.tsx';
+import {
+  PassengerSelector
+} from '@/components/complex/passenger-selector/PassengerSelector.tsx';
+import {
+  FlightAutocomplete
+} from '@/components/complex/flight-autocomplite/FlightAutocomplite.tsx';
+import {
+  FlightDatePicker
+} from '@/components/complex/flight-datepicker/FlightDatepicker.tsx';
 import { ArrowLeftRight, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button.tsx';
 import { useFlightSearch } from '@/state/context/FlightSearchContext.tsx';
@@ -44,7 +52,6 @@ export function FiltersGroup() {
         adults: '1',
       };
 
-      console.log('Sending to API:', payload);
       const flightOffers = await appApiService.getFlightOffers(payload);
       dispatch(actions.refreshFlightResults(flightOffers || []));
     } catch (error) {
