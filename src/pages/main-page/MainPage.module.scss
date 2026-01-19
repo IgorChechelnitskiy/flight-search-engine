@@ -13,10 +13,10 @@
     align-items: flex-start;
     justify-content: center;
     overflow: hidden;
-    padding: 4rem 1rem 8rem;
+    padding: 1rem;
 
     @media (min-width: 768px) {
-      padding: 6rem 2rem 10rem;
+      padding: 2rem 10rem;
       min-height: auto;
     }
 
@@ -55,7 +55,7 @@
     align-items: center;
     text-align: center;
 
-    padding: 2.5rem 1.5rem 4rem;
+    padding: 1rem;
     border-radius: 2rem;
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(12px);
@@ -147,10 +147,10 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
-    margin-top: -2.5rem;
+    margin-top: 1rem;
 
     @media (min-width: 768px) {
-      margin-top: -5rem;
+      margin-top: 1rem;
       padding: 0 1.5rem;
     }
   }
@@ -158,7 +158,7 @@
   .resultsSection {
     flex: 1;
     max-width: 1200px;
-    margin: 3rem auto;
+    margin: 4rem auto;
     width: 100%;
     padding: 0 1.5rem;
   }

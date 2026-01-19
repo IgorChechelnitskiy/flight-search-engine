@@ -20,45 +20,49 @@ export function MainPage() {
 
   return (
     <main className={cs.mainPage}>
-      <section className={cs.heroSection} aria-labelledby="hero-title">
+      {/* 1. HERO */}
+      <section className={cs.heroSection}>
         <div className={cs.glowOrb} aria-hidden="true" />
-
         <div className={cs.heroContent}>
-          <h1 id="hero-title" className={cs.heroTitle}>
+          <h1 className={cs.heroTitle}>
             <span className={cs.titleLight}>Flights</span>
             <span className={cs.titleBold}>Booking</span>
           </h1>
-
           <div className={cs.heroSubtitle}>
-            <span className={cs.line} aria-hidden="true" />
+            <span className={cs.line} />
             <p>Explore the world with ease</p>
-            <span className={cs.line} aria-hidden="true" />
+            <span className={cs.line} />
           </div>
         </div>
       </section>
-      <section
-        className={cs.searchContainer}
-        aria-label="Flight search filters"
-      >
-        <h2 className="sr-only">Search Filters</h2>
+
+      {/* 2. SEARCH (Overlaps Hero) */}
+      <section className={cs.searchContainer}>
         <FlightSearchProvider>
           <FiltersGroup />
         </FlightSearchProvider>
       </section>
+
+      {/* 3. RESULTS */}
       <section className={cs.resultsSection}>
-        <div className={cs.resultsContainer}>
-          {state.loading ? (
-            <FlightResultsSkeleton />
-          ) : (
-            <FlightResults data={state?.flightResults} />
-          )}
-        </div>
-      </section>
-      <section className="container max-w-[1200px] mx-auto py-12 px-4">
         {state.loading ? (
-          [...Array(6)].map((_, i) => (
-            <div key={i} className={cs.skeletonCard} />
-          ))
+          <FlightResultsSkeleton />
+        ) : (
+          <FlightResults data={state?.flightResults} />
+        )}
+      </section>
+
+      {/* 4. DESTINATIONS (Fixed Tailwind conflict) */}
+      <section className={cs.destinationsSection}>
+        {state.loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="h-64 bg-white/5 rounded-xl animate-pulse"
+              />
+            ))}
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {state.travelDestinations?.map((item: any, index: number) => (
@@ -72,12 +76,13 @@ export function MainPage() {
           </div>
         )}
       </section>
-      <section>
+
+      {/* 5. FAQ */}
+      <section className={cs.faqSection}>
         <FAQSection />
       </section>
-      <footer>
-        <Footer />
-      </footer>
+
+      <Footer />
     </main>
   );
 }

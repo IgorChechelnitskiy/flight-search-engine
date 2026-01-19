@@ -3,6 +3,9 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from '@/App.tsx';
 import ErrorPage from '@/pages/error-page/ErrorPage.tsx';
 import { NavUrlEnum } from '@/const/enums/NavUrlEnum.ts';
+import {
+  FlightResultsSkeleton
+} from '@/components/complex/flight-results/FlightResults.tsx';
 
 const mainRouter = createBrowserRouter(
   [
@@ -17,6 +20,7 @@ const mainRouter = createBrowserRouter(
         },
         {
           path: NavUrlEnum.MAIN,
+          HydrateFallback: FlightResultsSkeleton,
           lazy: async () => {
             const { MainPage } = await import('@/pages/main-page/MainPage.tsx');
             return {
