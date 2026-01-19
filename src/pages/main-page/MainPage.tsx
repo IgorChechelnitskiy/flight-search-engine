@@ -20,11 +20,10 @@ export function MainPage() {
 
   return (
     <main className={cs.mainPage}>
-      {/* 1. HERO */}
-      <section className={cs.heroSection}>
+      <section className={cs.heroSection} aria-labelledby="hero-title">
         <div className={cs.glowOrb} aria-hidden="true" />
         <div className={cs.heroContent}>
-          <h1 className={cs.heroTitle}>
+          <h1 id="hero-title" className={cs.heroTitle}>
             <span className={cs.titleLight}>Flights</span>
             <span className={cs.titleBold}>Booking</span>
           </h1>
@@ -36,14 +35,13 @@ export function MainPage() {
         </div>
       </section>
 
-      {/* 2. SEARCH (Overlaps Hero) */}
       <section className={cs.searchContainer}>
+        <h2 className="sr-only">Search Filters</h2>
         <FlightSearchProvider>
           <FiltersGroup />
         </FlightSearchProvider>
       </section>
 
-      {/* 3. RESULTS */}
       <section className={cs.resultsSection}>
         {state.loading ? (
           <FlightResultsSkeleton />
@@ -52,32 +50,23 @@ export function MainPage() {
         )}
       </section>
 
-      {/* 4. DESTINATIONS (Fixed Tailwind conflict) */}
       <section className={cs.destinationsSection}>
-        {state.loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="h-64 bg-white/5 rounded-xl animate-pulse"
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {state.travelDestinations?.map((item: any, index: number) => (
-              <PopularDestinationCard
-                key={item.destination}
-                destination={item.destination}
-                score={item.analytics?.travelers?.score || 0}
-                index={index}
-              />
-            ))}
-          </div>
-        )}
+        <div className={cs.destinationsGrid}>
+          {state.loading
+            ? [...Array(3)].map((_, i) => (
+                <div key={i} className={cs.skeletonCard} />
+              ))
+            : state.travelDestinations?.map((item: any, index: number) => (
+                <PopularDestinationCard
+                  key={item.destination}
+                  destination={item.destination}
+                  score={item.analytics?.travelers?.score || 0}
+                  index={index}
+                />
+              ))}
+        </div>
       </section>
 
-      {/* 5. FAQ */}
       <section className={cs.faqSection}>
         <FAQSection />
       </section>
