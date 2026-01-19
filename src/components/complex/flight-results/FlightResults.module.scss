@@ -20,21 +20,17 @@
   width: 100%;
   border-collapse: collapse;
 
-  // --- DARKER SUBTEXT & LABELS ---
-  // This targets the small text like "Departure", "Landing", and "Incl. taxes"
   span {
-    color: #1e293b; // Slate-800 for main text
+    color: #1e293b;
 
-    // Specifically target labels that usually use slate-400/500
     &[class*="text-slate-"],
     &[class*="uppercase"] {
-      color: #334155 !important; // Forced Slate-700
+      color: #334155 !important;
       font-weight: 600;
       opacity: 1;
     }
   }
 
-  // --- DESKTOP VIEW (Table) ---
   @media (min-width: 769px) {
     display: table;
 
@@ -48,7 +44,7 @@
         font-size: 0.75rem;
         font-weight: 800;
         text-transform: uppercase;
-        color: #1e293b; // Darker header text
+        color: #1e293b;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
       }
     }
@@ -73,7 +69,6 @@
     }
   }
 
-  // --- MOBILE VIEW (Cards) ---
   @media (max-width: 768px) {
     display: block;
     thead {
@@ -136,7 +131,7 @@
 .priceText {
   font-size: 1.25rem;
   font-weight: 900;
-  color: #020617; // Absolute Slate-950 for maximum visibility
+  color: #020617;
 }
 
 .bookButton {
@@ -182,7 +177,7 @@
     white-space: nowrap;
 
     .statusLabel {
-      color: #334155; // Darker Slate-700
+      color: #334155;
       font-weight: 600;
     }
 

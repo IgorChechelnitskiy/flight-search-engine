@@ -3,7 +3,7 @@ import { apiConfigurationService } from './apiConfigurationService';
 class AppApiService {
   async getLocations(keyword: string) {
     const { data } = await apiConfigurationService.get(
-      'v1/reference-data/locations', // Updated to include v1 for clarity
+      'v1/reference-data/locations',
       {
         params: {
           subType: 'CITY,AIRPORT',

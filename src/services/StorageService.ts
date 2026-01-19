@@ -11,19 +11,12 @@ const StorageService = {
     localStorage.setItem(appKey, JSON.stringify(appModel));
   },
 
-  // getLocalStorage(key: string) {
-  //   let appModel = localStorage.getItem(appKey);
-  //   appModel = appModel && JSON.parse(appModel);
-  //   return appModel ? (appModel[key] as any) : null;
-  // },
-
   getLocalStorage<T>(key: string): T | null {
     const data = localStorage.getItem(appKey);
 
     if (!data) return null;
 
     try {
-      // We tell TS that appModel is an object with string keys
       const appModel: Record<string, T> = JSON.parse(data);
       return appModel[key] ?? null;
     } catch (error) {

@@ -41,8 +41,6 @@ export function UserMenu() {
           />
         </button>
       </DropdownMenuTrigger>
-
-      {/* portal prop set to true helps keep it above parent stacking contexts */}
       <DropdownMenuContent
         align="end"
         className={cs.dropdownContent}

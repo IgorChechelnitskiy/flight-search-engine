@@ -32,17 +32,11 @@ export function FlightAutocomplete({ type, placeholder }: Props) {
   const [isSelecting, setIsSelecting] = useState(false);
 
   const currentSelection = type === 'from' ? fromLocation : toLocation;
-
-  // --- NEW: SELECTION GUARD LOGIC ---
-  // Create the label format used in the input
   const selectionLabel = currentSelection
     ? `${currentSelection.address.cityName} (${currentSelection.iataCode})`
     : '';
-
-  // Check if the current text is exactly what we already selected
   const isQuerySameAsSelection = query === selectionLabel;
 
-  // Sync internal text if the Global Context changes
   useEffect(() => {
     if (currentSelection) {
       setQuery(selectionLabel);
@@ -51,9 +45,7 @@ export function FlightAutocomplete({ type, placeholder }: Props) {
     }
   }, [currentSelection, selectionLabel]);
 
-  // Debounced Search logic
   useEffect(() => {
-    // GUARD: If user is selecting, text is too short, OR text matches current selection
     if (isSelecting || query.length < 2 || isQuerySameAsSelection) {
       setOpen(false);
       return;
@@ -64,7 +56,6 @@ export function FlightAutocomplete({ type, placeholder }: Props) {
       try {
         const data = await getSuggestions(query);
         setResults(data);
-        // Only open if we have data AND the user hasn't just selected/matched
         setOpen(data.length > 0 && !isQuerySameAsSelection);
       } catch (error) {
         setResults([]);
@@ -96,7 +87,6 @@ export function FlightAutocomplete({ type, placeholder }: Props) {
                 setQuery(e.target.value);
               }}
               onFocus={() => {
-                // GUARD: Only open if we have results AND the user isn't focused on a finished selection
                 if (
                   query.length >= 2 &&
                   results.length > 0 &&
