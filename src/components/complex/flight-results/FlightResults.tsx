@@ -30,13 +30,11 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
   const [selectedFlight, setSelectedFlight] = useState<FlightOffer | null>(
     null
   );
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const chartData = useMemo(() => {
-    return (data || [])
+    const safeData = Array.isArray(data) ? data : [];
+    return safeData
       .map((flight) => ({
         airline: flight.validatingAirlineCodes?.[0] || 'N/A',
         price: parseFloat(flight.price?.total || '0'),
@@ -153,7 +151,64 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  if (!data || data.length === 0) return null;
+  const { isEmpty, isInitialState } = useMemo(() => {
+    if (data === null || data === undefined) {
+      return { isEmpty: false, isInitialState: true };
+    }
+
+    const hasNoData = Array.isArray(data)
+      ? data.length === 0
+      : typeof data === 'object' && Object.keys(data).length === 0;
+
+    return { isEmpty: hasNoData, isInitialState: false };
+  }, [data]);
+
+  if (isInitialState) return null;
+
+  if (isEmpty) {
+    return (
+      <div className={cs.noResultsContainer}>
+        <div className={cs.iconWrapper}>
+          <Plane className={cs.sadPlane} size={48} />
+        </div>
+        <h3 className={cs.noResultsTitle}>No Flights Found</h3>
+        <p className={cs.noResultsText}>
+          We couldn't find any flights matching your current search or filters.
+          Try adjusting your dates or removing some filters.
+        </p>
+      </div>
+    );
+  }
+
+  if (isEmpty) {
+    return (
+      <div className={cs.noResultsContainer}>
+        <div className={cs.iconWrapper}>
+          <Plane className={cs.sadPlane} size={48} />
+        </div>
+        <h3 className={cs.noResultsTitle}>No Flights Found</h3>
+        <p className={cs.noResultsText}>
+          We couldn't find any flights matching your current search or filters.
+          Try adjusting your dates or removing some filters.
+        </p>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className={cs.noResultsContainer}>
+        <div className={cs.iconWrapper}>
+          <Plane className={cs.sadPlane} size={48} />
+        </div>
+        <h3 className={cs.noResultsTitle}>No Flights Found</h3>
+        <p className={cs.noResultsText}>
+          We couldn't find any flights matching your current filters. Try
+          adjusting your dates or price range to see more options.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <section className={cs.resultsWrapper} aria-label="Flight search results">
@@ -186,8 +241,6 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
             ))}
           </tbody>
         </table>
-
-        {/* Pagination Block stays exactly as you liked it */}
         <div className={cs.pagination}>
           <div className={cs.pageStatus}>
             <span className={cs.statusLabel}>Showing</span>
@@ -231,8 +284,6 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
           </div>
         </div>
       </div>
-
-      {/* Flight Info Dialog */}
       <Dialog
         open={!!selectedFlight}
         onOpenChange={() => setSelectedFlight(null)}
