@@ -34,29 +34,22 @@ apiConfigurationService.interceptors.request.use(
 );
 
 apiConfigurationService.interceptors.response.use(
-  (response) => response, // Pass through successful responses
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Check if error is 401 and we haven't already tried to retry this specific request
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // Mark request so we don't loop infinitely
+      originalRequest._retry = true;
 
       try {
-        // 1. Clear the old stale token
         storageService.clearLocalStorage();
 
-        // 2. Fetch a fresh token and store it
-        // Note: authService.fetchAndStoreToken() should handle the localStorage.set
         const newToken = await authService.fetchAndStoreToken();
 
-        // 3. Update the failed request header with the new token
         originalRequest.headers.Authorization = newToken;
 
-        // 4. Retry the original request with the new token
         return apiConfigurationService(originalRequest);
       } catch (refreshError) {
-        // If the refresh itself fails, clear everything and redirect to login if necessary
         storageService.clearLocalStorage();
         console.error('Token refresh flow failed:', refreshError);
         return Promise.reject(refreshError);

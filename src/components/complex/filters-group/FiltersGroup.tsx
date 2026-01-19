@@ -11,7 +11,6 @@ import { appApiService } from '@/services/api/AppApiService.ts';
 import { format } from 'date-fns';
 import { useDispatch } from 'react-redux';
 import { AppSliceActions as actions } from '@/state/slices/AppSlice.ts';
-import { Skeleton } from '@/components/ui/skeleton.tsx';
 
 export function FiltersGroup() {
   const dispatch = useDispatch();
@@ -74,8 +73,6 @@ export function FiltersGroup() {
           onChange={(id) => setCurrency(id)}
         />
       </div>
-
-      {/* Main Row: Inputs */}
       <div className={cs.inputsBlock}>
         <FlightAutocomplete placeholder="From where?" type="from" />
 
@@ -90,19 +87,14 @@ export function FiltersGroup() {
             <ArrowLeftRight className="h-4 w-4 text-blue-400" />
           </Button>
         </div>
-
         <FlightAutocomplete placeholder="To where?" type="to" />
-
         <FlightDatePicker date={dateFrom} onChange={setDateFrom} />
-
         <FlightDatePicker
           date={dateTo}
           onChange={setDateTo}
           disabled={tripType === 'one-way'}
         />
       </div>
-
-      {/* Bottom Row: Action */}
       <Button
         onClick={handleSearch}
         disabled={!searchParams || !dateFrom}
@@ -111,23 +103,6 @@ export function FiltersGroup() {
         <Search className="h-5 w-5 mr-2" />
         Search Flights
       </Button>
-    </div>
-  );
-}
-
-export function FiltersGroupSkeleton() {
-  return (
-    <div className={cs.skeletonContainer}>
-      <div className="flex gap-4 mb-4">
-        <Skeleton className="h-10 w-32 bg-white/10" />
-        <Skeleton className="h-10 w-32 bg-white/10" />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Skeleton className="h-14 w-full bg-white/10" />
-        <Skeleton className="h-14 w-full bg-white/10" />
-        <Skeleton className="h-14 w-full bg-white/10" />
-        <Skeleton className="h-14 w-full bg-white/10" />
-      </div>
     </div>
   );
 }

@@ -83,7 +83,6 @@ export function PassengerSelector() {
             sublabel="Under 2 (on lap)"
             count={draftCounts.infants}
             onUpdate={(d) => updateDraft('infants', d)}
-            // Tooltip or helper logic can be added here
             max={draftCounts.adults}
           />
 
