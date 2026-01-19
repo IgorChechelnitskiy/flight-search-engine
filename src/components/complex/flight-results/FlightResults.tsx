@@ -6,16 +6,11 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ChevronLeft, ChevronRight, Plane } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FilterX, Plane } from 'lucide-react';
 import cs from './FlightResults.module.scss';
 import { FlightChart } from '@/components/complex/flight-chart/FlightChart.tsx';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 interface FlightOffer {
   id: string;
@@ -26,22 +21,75 @@ interface FlightOffer {
 
 const columnHelper = createColumnHelper<FlightOffer>();
 
-export function FlightResults({ data }: { data: FlightOffer[] }) {
+export function FlightResults({ data }: { data: FlightOffer[] | null }) {
   const [selectedFlight, setSelectedFlight] = useState<FlightOffer | null>(
     null
   );
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [sortOrder, setSortOrder] = useState<
+    'asc' | 'desc' | 'airline' | 'none'
+  >('none');
+  const [priceRange, setPriceRange] = useState({ from: '', to: '' });
+  const [selectedAirlines, setSelectedAirlines] = useState<string[]>([]);
+
+  const { isEmpty, isInitialState } = useMemo(() => {
+    if (data === null || data === undefined) {
+      return { isEmpty: false, isInitialState: true };
+    }
+    const hasNoData = Array.isArray(data)
+      ? data.length === 0
+      : typeof data === 'object' && Object.keys(data).length === 0;
+
+    return { isEmpty: hasNoData, isInitialState: false };
+  }, [data]);
+
+  const uniqueAirlines = useMemo(() => {
+    const codes = (data || []).map((f) => f.validatingAirlineCodes[0]);
+    return Array.from(new Set(codes)).sort();
+  }, [data]);
+
+  const processedData = useMemo(() => {
+    let result = Array.isArray(data) ? [...data] : [];
+
+    if (priceRange.from) {
+      result = result.filter(
+        (f) => parseFloat(f.price.total) >= parseFloat(priceRange.from)
+      );
+    }
+    if (priceRange.to) {
+      result = result.filter(
+        (f) => parseFloat(f.price.total) <= parseFloat(priceRange.to)
+      );
+    }
+    if (selectedAirlines.length > 0) {
+      result = result.filter((f) =>
+        selectedAirlines.includes(f.validatingAirlineCodes[0])
+      );
+    }
+
+    if (sortOrder !== 'none') {
+      result.sort((a, b) => {
+        if (sortOrder === 'airline') {
+          return a.validatingAirlineCodes[0].localeCompare(
+            b.validatingAirlineCodes[0]
+          );
+        }
+        const pA = parseFloat(a.price.total);
+        const pB = parseFloat(b.price.total);
+        return sortOrder === 'asc' ? pA - pB : pB - pA;
+      });
+    }
+
+    return result;
+  }, [data, priceRange, selectedAirlines, sortOrder]);
 
   const chartData = useMemo(() => {
-    const safeData = Array.isArray(data) ? data : [];
-    return safeData
-      .map((flight) => ({
-        airline: flight.validatingAirlineCodes?.[0] || 'N/A',
-        price: parseFloat(flight.price?.total || '0'),
-        currency: flight.price?.currency,
-      }))
-      .sort((a, b) => a.price - b.price);
-  }, [data]);
+    return processedData.map((flight) => ({
+      airline: flight.validatingAirlineCodes?.[0] || 'N/A',
+      price: parseFloat(flight.price?.total || '0'),
+      currency: flight.price?.currency,
+    }));
+  }, [processedData]);
 
   const columns = useMemo(
     () => [
@@ -78,10 +126,7 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
         }
       ),
       columnHelper.accessor(
-        (row) => {
-          const segments = row.itineraries[0].segments;
-          return segments[segments.length - 1].arrival.at;
-        },
+        (row) => row.itineraries[0].segments.at(-1).arrival.at,
         {
           id: 'arrival',
           header: 'Arrival',
@@ -118,24 +163,19 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
               {info.row.original.price.currency}{' '}
               {parseFloat(info.getValue()).toLocaleString()}
             </span>
-            <span className="text-[10px] text-slate-400 uppercase font-bold">
-              Incl. taxes & fees
-            </span>
           </div>
         ),
       }),
       columnHelper.display({
         id: 'actions',
-        header: () => <div>Action</div>,
+        header: 'Action',
         cell: (info) => (
-          <div className={cs.actionCell}>
-            <button
-              className={cs.bookButton}
-              onClick={() => setSelectedFlight(info.row.original)}
-            >
-              Select
-            </button>
-          </div>
+          <button
+            className={cs.bookButton}
+            onClick={() => setSelectedFlight(info.row.original)}
+          >
+            Select
+          </button>
         ),
       }),
     ],
@@ -143,7 +183,7 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
   );
 
   const table = useReactTable({
-    data,
+    data: processedData,
     columns,
     state: { pagination },
     onPaginationChange: setPagination,
@@ -151,18 +191,7 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const { isEmpty, isInitialState } = useMemo(() => {
-    if (data === null || data === undefined) {
-      return { isEmpty: false, isInitialState: true };
-    }
-
-    const hasNoData = Array.isArray(data)
-      ? data.length === 0
-      : typeof data === 'object' && Object.keys(data).length === 0;
-
-    return { isEmpty: hasNoData, isInitialState: false };
-  }, [data]);
-
+  // 8. EARLY RENDERS
   if (isInitialState) return null;
 
   if (isEmpty) {
@@ -173,38 +202,8 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
         </div>
         <h3 className={cs.noResultsTitle}>No Flights Found</h3>
         <p className={cs.noResultsText}>
-          We couldn't find any flights matching your current search or filters.
-          Try adjusting your dates or removing some filters.
-        </p>
-      </div>
-    );
-  }
-
-  if (isEmpty) {
-    return (
-      <div className={cs.noResultsContainer}>
-        <div className={cs.iconWrapper}>
-          <Plane className={cs.sadPlane} size={48} />
-        </div>
-        <h3 className={cs.noResultsTitle}>No Flights Found</h3>
-        <p className={cs.noResultsText}>
-          We couldn't find any flights matching your current search or filters.
-          Try adjusting your dates or removing some filters.
-        </p>
-      </div>
-    );
-  }
-
-  if (!data || data.length === 0) {
-    return (
-      <div className={cs.noResultsContainer}>
-        <div className={cs.iconWrapper}>
-          <Plane className={cs.sadPlane} size={48} />
-        </div>
-        <h3 className={cs.noResultsTitle}>No Flights Found</h3>
-        <p className={cs.noResultsText}>
-          We couldn't find any flights matching your current filters. Try
-          adjusting your dates or price range to see more options.
+          We couldn't find any flights for this route. Try changing your search
+          criteria.
         </p>
       </div>
     );
@@ -212,108 +211,198 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
 
   return (
     <section className={cs.resultsWrapper} aria-label="Flight search results">
-      <FlightChart data={chartData} />
-      <div className={cs.tableContainer}>
-        <table className={cs.table}>
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className={cs.tableRow}>
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className={cs.pagination}>
-          <div className={cs.pageStatus}>
-            <span className={cs.statusLabel}>Showing</span>
-            <span className={cs.statusValue}>
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}
-              {' - '}
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) *
-                  table.getState().pagination.pageSize,
-                data.length
-              )}
-            </span>
-            <span className={cs.statusLabel}>of</span>
-            <span className={cs.statusValue}>{data.length}</span>
-            <span className={cs.statusLabel}>flights</span>
+      {/* Filtering and Sorting Header */}
+      <div className={cs.resultsHeader}>
+        <div className={cs.filterBar}>
+          <div className={cs.filterGroup}>
+            <label>Price Range</label>
+            <div className={cs.inputPair}>
+              <input
+                type="number"
+                placeholder="From"
+                value={priceRange.from}
+                onChange={(e) =>
+                  setPriceRange((p) => ({ ...p, from: e.target.value }))
+                }
+              />
+              <input
+                type="number"
+                placeholder="To"
+                value={priceRange.to}
+                onChange={(e) =>
+                  setPriceRange((p) => ({ ...p, to: e.target.value }))
+                }
+              />
+            </div>
           </div>
 
-          <div className={cs.navButtonGroup}>
-            <button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              className={cs.paginationBtn}
-            >
-              <ChevronLeft size={18} strokeWidth={2.5} />
-              <span>Previous</span>
-            </button>
-            <div className={cs.pageIndicator}>
-              {table.getState().pagination.pageIndex + 1} /{' '}
-              {table.getPageCount()}
+          <div className={cs.filterGroup}>
+            <label>Airlines</label>
+            <div className={cs.airlineChips}>
+              {uniqueAirlines.map((code) => (
+                <button
+                  key={code}
+                  className={`${cs.chip} ${selectedAirlines.includes(code) ? cs.activeChip : ''}`}
+                  onClick={() =>
+                    setSelectedAirlines((prev) =>
+                      prev.includes(code)
+                        ? prev.filter((c) => c !== code)
+                        : [...prev, code]
+                    )
+                  }
+                >
+                  {code}
+                </button>
+              ))}
             </div>
+          </div>
+
+          {(priceRange.from ||
+            priceRange.to ||
+            selectedAirlines.length > 0) && (
             <button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-              className={cs.paginationBtn}
+              className={cs.clearAll}
+              onClick={() => {
+                setPriceRange({ from: '', to: '' });
+                setSelectedAirlines([]);
+              }}
             >
-              <span>Next</span>
-              <ChevronRight size={18} strokeWidth={2.5} />
+              Clear
+            </button>
+          )}
+        </div>
+
+        <div className={cs.controlsRow}>
+          <div className={cs.infoBlock}>
+            <h2 className={cs.resultsTitle}>Available Offers</h2>
+            <p className={cs.resultsSubtitle}>
+              Showing {processedData.length} flights
+            </p>
+          </div>
+
+          <div className={cs.buttonGroup}>
+            <button
+              className={`${cs.sortBtn} ${sortOrder === 'asc' ? cs.active : ''}`}
+              onClick={() => setSortOrder('asc')}
+            >
+              Cheapest
+            </button>
+            <button
+              className={`${cs.sortBtn} ${sortOrder === 'desc' ? cs.active : ''}`}
+              onClick={() => setSortOrder('desc')}
+            >
+              Priciest
+            </button>
+            <button
+              className={`${cs.sortBtn} ${sortOrder === 'airline' ? cs.active : ''}`}
+              onClick={() => setSortOrder('airline')}
+            >
+              Airline
+            </button>
+            <button
+              className={cs.resetBtn}
+              onClick={() => setSortOrder('none')}
+            >
+              Reset Sort
             </button>
           </div>
         </div>
       </div>
+
+      {processedData.length > 0 ? (
+        <>
+          <FlightChart data={chartData} />
+          <div className={cs.tableContainer}>
+            <table className={cs.table}>
+              <thead>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <th key={header.id}>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel().rows.map((row) => (
+                  <tr key={row.id} className={cs.tableRow}>
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className={cs.pagination}>
+              <div className={cs.pageStatus}>
+                <span>
+                  {table.getState().pagination.pageIndex * pagination.pageSize +
+                    1}{' '}
+                  -{' '}
+                  {Math.min(
+                    (table.getState().pagination.pageIndex + 1) *
+                      pagination.pageSize,
+                    processedData.length
+                  )}{' '}
+                  of {processedData.length}
+                </span>
+              </div>
+              <div className={cs.navButtonGroup}>
+                <button
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                  className={cs.paginationBtn}
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                  className={cs.paginationBtn}
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className={cs.filterEmpty}>
+          <FilterX size={40} />
+          <p>No flights match your active filters.</p>
+        </div>
+      )}
+
       <Dialog
         open={!!selectedFlight}
         onOpenChange={() => setSelectedFlight(null)}
       >
         <DialogContent className={cs.dialogContent}>
-          <DialogHeader>
-            <DialogTitle className={cs.dialogTitle}>
-              Flight Overview
-            </DialogTitle>
-          </DialogHeader>
           {selectedFlight && (
             <div className={cs.dialogBody}>
               <div className={cs.detailCard}>
                 <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={cs.airlineBadge}>
-                      {selectedFlight.validatingAirlineCodes[0]}
-                    </div>
-                    <span className="font-bold text-lg text-slate-900">
-                      Airline {selectedFlight.validatingAirlineCodes[0]}
-                    </span>
-                  </div>
+                  <span className="font-bold text-lg">
+                    Airline {selectedFlight.validatingAirlineCodes[0]}
+                  </span>
                   <span className={cs.priceHighlight}>
-                    {selectedFlight.price.currency}{' '}
-                    {parseFloat(selectedFlight.price.total).toLocaleString()}
+                    {selectedFlight.price.currency} {selectedFlight.price.total}
                   </span>
                 </div>
                 <div className={cs.routeInfo}>
                   <div className="text-center">
-                    <p className="text-2xl font-black text-slate-900">
+                    <p className="text-2xl font-black">
                       {new Date(
                         selectedFlight.itineraries[0].segments[0].departure.at
                       ).toLocaleTimeString([], {
@@ -321,15 +410,12 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
                         minute: '2-digit',
                       })}
                     </p>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">
-                      Departure
-                    </p>
                   </div>
                   <div className={cs.routeLine}>
-                    <Plane size={14} className={cs.planeIcon} />
+                    <Plane size={14} />
                   </div>
                   <div className="text-center">
-                    <p className="text-2xl font-black text-slate-900">
+                    <p className="text-2xl font-black">
                       {new Date(
                         selectedFlight.itineraries[0].segments.at(-1).arrival.at
                       ).toLocaleTimeString([], {
@@ -337,13 +423,13 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
                         minute: '2-digit',
                       })}
                     </p>
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">
-                      Arrival
-                    </p>
                   </div>
                 </div>
               </div>
-              <button className={cs.bookButton} style={{ marginTop: '1rem' }}>
+              <button
+                className={cs.bookButton}
+                style={{ width: '100%', marginTop: '1rem' }}
+              >
                 Confirm Selection
               </button>
             </div>
