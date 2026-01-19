@@ -6,7 +6,7 @@
   width: 100%;
 }
 
-/* --- HEADER: Filters & Sorts --- */
+/* --- SEARCH & FILTERS --- */
 .resultsHeader {
   display: flex;
   flex-direction: column;
@@ -47,17 +47,12 @@
   }
 
   .inputPair input {
-    gap: 10px;
     width: 90px;
     background: rgba(15, 23, 42, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0.5rem 0.75rem;
     border-radius: 0.6rem;
     color: white;
-
-    input {
-      padding-right: 10px;
-    }
 
     &:focus {
       border-color: #3b82f6;
@@ -81,7 +76,6 @@
   }
 }
 
-/* --- SORTING --- */
 .buttonGroup {
   display: flex;
   background: rgba(15, 23, 42, 0.4);
@@ -105,7 +99,7 @@
   }
 }
 
-/* --- TABLE DISPLAY --- */
+/* --- TABLE CONTAINER --- */
 .tableContainer {
   background: white;
   border-radius: 1.25rem;
@@ -113,9 +107,11 @@
   overflow: hidden;
 }
 
+/* --- DESKTOP TABLE STYLE --- */
 .table {
   width: 100%;
   border-collapse: collapse;
+
   @media (min-width: 769px) {
     display: table !important;
     thead {
@@ -127,6 +123,10 @@
     }
     .tableRow {
       display: table-row !important;
+
+      &:hover {
+        background: #fcfdfe;
+      }
     }
     td, th {
       display: table-cell !important;
@@ -135,56 +135,76 @@
       border-bottom: 1px solid #f1f5f9;
     }
   }
-}
 
-/* --- MOBILE CARD VIEW --- */
-@media (max-width: 768px) {
-  .table {
-    display: block;
-
+  /* --- MOBILE CARD STYLE FIX --- */
+  @media (max-width: 768px) {
+    display: block !important;
     thead {
       display: none !important;
+    }
+
+    tbody {
+      display: flex !important;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
     }
 
     .tableRow {
       display: flex !important;
       flex-direction: column;
-      padding: 1.5rem;
-      border-bottom: 1px solid #f1f5f9;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      padding: 1.25rem;
       position: relative;
+      gap: 0.5rem;
 
       td {
-        display: block;
+        display: block !important;
         padding: 0 !important;
-        border: none;
-        margin-bottom: 0.5rem;
+        border: none !important;
+        text-align: left;
+
+        // Validating Airline
+        &:nth-child(1) {
+          font-weight: 800;
+          color: #1e293b;
+          margin-bottom: 0.25rem;
+        }
+
+        // Departure & Landing Labels
+        &:nth-child(2), &:nth-child(3) {
+          font-size: 0.9rem;
+          color: #475569;
+        }
+
+        // Duration
+        &:nth-child(4) {
+          font-weight: 600;
+          color: #64748b;
+        }
+
+        // Price - Positioned top right to avoid collision
+        &:nth-child(5) {
+          position: absolute;
+          top: 1.25rem;
+          right: 1.25rem;
+          text-align: right;
+          font-weight: 900;
+          color: #2563eb;
+        }
+
+        // Select Button - Full width at bottom
+        &:last-child {
+          margin-top: 1rem;
+          width: 100%;
+
+          button {
+            width: 100%;
+          }
+        }
       }
-
-      td:nth-child(5) {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-      }
-    }
-  }
-}
-
-/* --- DIALOG (FIXED FOR CLIPPING) --- */
-.dialogContent {
-  background: white !important;
-  border-radius: 1.5rem !important;
-  padding: 0 !important;
-  overflow: hidden;
-  max-width: 450px !important;
-  border: none !important;
-
-  :global(button.absolute.right-4) {
-    top: 1.5rem !important;
-    right: 1.5rem !important;
-    opacity: 0.5;
-
-    &:hover {
-      opacity: 1;
     }
   }
 }
@@ -269,6 +289,65 @@
   margin-top: 1.5rem;
   border: none;
   cursor: pointer;
+}
+
+/* --- PAGINATION --- */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  background: #fcfdfe;
+  border-top: 1px solid #f1f5f9;
+
+  .pageStatus {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+  }
+}
+
+.navButtonGroup {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+
+  .paginationBtn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+
+    &:hover:not(:disabled) {
+      border-color: #2563eb;
+      color: #2563eb;
+      background: #f0f7ff;
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      background: #f8fafc;
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
 }
 
 .visuallyHidden {
