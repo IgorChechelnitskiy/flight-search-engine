@@ -12,8 +12,8 @@ const mainRouter = createBrowserRouter(
       errorElement: <ErrorPage />,
       children: [
         {
-          index: true,
-          element: <Navigate to={NavUrlEnum.MAIN} replace />,
+          path: '',
+          element: <Navigate to={NavUrlEnum.MAIN} relative="route" />,
         },
         {
           path: NavUrlEnum.MAIN,

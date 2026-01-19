@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://IgorChechelnitskiy.github.io/flight-search-engine",
+  "homepage": "https://IgorChechelnitskiy.github.io/flight-search-engine/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
