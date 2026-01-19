@@ -124,7 +124,7 @@ export function FlightResults({ data }: { data: FlightOffer[] | null }) {
                   hour12: false,
                 })}
               </span>
-              <span className="text-xs text-slate-500 uppercase tracking-wider">
+              <span className="text-xs text-slate-700 uppercase tracking-wider">
                 Departure
               </span>
             </div>
@@ -145,7 +145,7 @@ export function FlightResults({ data }: { data: FlightOffer[] | null }) {
                   hour12: false,
                 })}
               </span>
-              <span className="text-[10px] text-slate-400 uppercase font-medium">
+              <span className="text-[10px] text-slate-700 uppercase font-medium">
                 Landing
               </span>
             </div>
