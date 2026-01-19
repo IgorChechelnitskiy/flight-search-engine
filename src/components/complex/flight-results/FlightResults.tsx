@@ -10,7 +10,13 @@ import { ChevronLeft, ChevronRight, FilterX, Plane } from 'lucide-react';
 import cs from './FlightResults.module.scss';
 import { FlightChart } from '@/components/complex/flight-chart/FlightChart.tsx';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface FlightOffer {
   id: string;
@@ -389,20 +395,29 @@ export function FlightResults({ data }: { data: FlightOffer[] | null }) {
         onOpenChange={() => setSelectedFlight(null)}
       >
         <DialogContent className={cs.dialogContent}>
+          <DialogHeader>
+            <DialogTitle className={cs.dialogTitle}>Flight Details</DialogTitle>
+            <DialogDescription className={cs.visuallyHidden}>
+              Review the itinerary and fare details for your selected flight.
+            </DialogDescription>
+          </DialogHeader>
+
           {selectedFlight && (
             <div className={cs.dialogBody}>
               <div className={cs.detailCard}>
                 <div className="flex justify-between items-center mb-4">
-                  <span className="font-bold text-lg">
+                  <span className="font-bold text-lg text-slate-900">
                     Airline {selectedFlight.validatingAirlineCodes[0]}
                   </span>
                   <span className={cs.priceHighlight}>
-                    {selectedFlight.price.currency} {selectedFlight.price.total}
+                    {selectedFlight.price.currency}{' '}
+                    {parseFloat(selectedFlight.price.total).toLocaleString()}
                   </span>
                 </div>
+
                 <div className={cs.routeInfo}>
                   <div className="text-center">
-                    <p className="text-2xl font-black">
+                    <p className="text-2xl font-black text-slate-900">
                       {new Date(
                         selectedFlight.itineraries[0].segments[0].departure.at
                       ).toLocaleTimeString([], {
@@ -410,12 +425,17 @@ export function FlightResults({ data }: { data: FlightOffer[] | null }) {
                         minute: '2-digit',
                       })}
                     </p>
+                    <span className="text-[10px] text-slate-500 uppercase font-bold">
+                      Departure
+                    </span>
                   </div>
+
                   <div className={cs.routeLine}>
-                    <Plane size={14} />
+                    <Plane size={14} className={cs.planeIcon} />
                   </div>
+
                   <div className="text-center">
-                    <p className="text-2xl font-black">
+                    <p className="text-2xl font-black text-slate-900">
                       {new Date(
                         selectedFlight.itineraries[0].segments.at(-1).arrival.at
                       ).toLocaleTimeString([], {
@@ -423,14 +443,22 @@ export function FlightResults({ data }: { data: FlightOffer[] | null }) {
                         minute: '2-digit',
                       })}
                     </p>
+                    <span className="text-[10px] text-slate-500 uppercase font-bold">
+                      Arrival
+                    </span>
                   </div>
                 </div>
               </div>
+
               <button
                 className={cs.bookButton}
-                style={{ width: '100%', marginTop: '1rem' }}
+                style={{ width: '100%', marginTop: '1.5rem' }}
+                onClick={() => {
+                  console.log('Booking flight:', selectedFlight.id);
+                  setSelectedFlight(null);
+                }}
               >
-                Confirm Selection
+                Confirm & Book Flight
               </button>
             </div>
           )}
