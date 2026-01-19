@@ -6,10 +6,16 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plane } from 'lucide-react';
 import cs from './FlightResults.module.scss';
 import { FlightChart } from '@/components/complex/flight-chart/FlightChart.tsx';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface FlightOffer {
   id: string;
@@ -21,6 +27,9 @@ interface FlightOffer {
 const columnHelper = createColumnHelper<FlightOffer>();
 
 export function FlightResults({ data }: { data: FlightOffer[] }) {
+  const [selectedFlight, setSelectedFlight] = useState<FlightOffer | null>(
+    null
+  );
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -31,7 +40,7 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
       .map((flight) => ({
         airline: flight.validatingAirlineCodes?.[0] || 'N/A',
         price: parseFloat(flight.price?.total || '0'),
-        currency: flight.price?.currency, // Pass this to the chart
+        currency: flight.price?.currency,
       }))
       .sort((a, b) => a.price - b.price);
   }, [data]);
@@ -120,9 +129,14 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
       columnHelper.display({
         id: 'actions',
         header: () => <div>Action</div>,
-        cell: () => (
+        cell: (info) => (
           <div className={cs.actionCell}>
-            <button className={cs.bookButton}>Select</button>
+            <button
+              className={cs.bookButton}
+              onClick={() => setSelectedFlight(info.row.original)}
+            >
+              Select
+            </button>
           </div>
         ),
       }),
@@ -133,9 +147,7 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
   const table = useReactTable({
     data,
     columns,
-    state: {
-      pagination,
-    },
+    state: { pagination },
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -174,6 +186,8 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
             ))}
           </tbody>
         </table>
+
+        {/* Pagination Block stays exactly as you liked it */}
         <div className={cs.pagination}>
           <div className={cs.pageStatus}>
             <span className={cs.statusLabel}>Showing</span>
@@ -198,22 +212,18 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
               className={cs.paginationBtn}
-              aria-label="Previous page"
             >
               <ChevronLeft size={18} strokeWidth={2.5} />
               <span>Previous</span>
             </button>
-
             <div className={cs.pageIndicator}>
               {table.getState().pagination.pageIndex + 1} /{' '}
               {table.getPageCount()}
             </div>
-
             <button
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
               className={cs.paginationBtn}
-              aria-label="Next page"
             >
               <span>Next</span>
               <ChevronRight size={18} strokeWidth={2.5} />
@@ -221,6 +231,74 @@ export function FlightResults({ data }: { data: FlightOffer[] }) {
           </div>
         </div>
       </div>
+
+      {/* Flight Info Dialog */}
+      <Dialog
+        open={!!selectedFlight}
+        onOpenChange={() => setSelectedFlight(null)}
+      >
+        <DialogContent className={cs.dialogContent}>
+          <DialogHeader>
+            <DialogTitle className={cs.dialogTitle}>
+              Flight Overview
+            </DialogTitle>
+          </DialogHeader>
+          {selectedFlight && (
+            <div className={cs.dialogBody}>
+              <div className={cs.detailCard}>
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={cs.airlineBadge}>
+                      {selectedFlight.validatingAirlineCodes[0]}
+                    </div>
+                    <span className="font-bold text-lg text-slate-900">
+                      Airline {selectedFlight.validatingAirlineCodes[0]}
+                    </span>
+                  </div>
+                  <span className={cs.priceHighlight}>
+                    {selectedFlight.price.currency}{' '}
+                    {parseFloat(selectedFlight.price.total).toLocaleString()}
+                  </span>
+                </div>
+                <div className={cs.routeInfo}>
+                  <div className="text-center">
+                    <p className="text-2xl font-black text-slate-900">
+                      {new Date(
+                        selectedFlight.itineraries[0].segments[0].departure.at
+                      ).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">
+                      Departure
+                    </p>
+                  </div>
+                  <div className={cs.routeLine}>
+                    <Plane size={14} className={cs.planeIcon} />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-black text-slate-900">
+                      {new Date(
+                        selectedFlight.itineraries[0].segments.at(-1).arrival.at
+                      ).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">
+                      Arrival
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <button className={cs.bookButton} style={{ marginTop: '1rem' }}>
+                Confirm Selection
+              </button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
